@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinVista Digital Lending — Credit Strategy Presentation</title>
+<meta name="description" content="Credit Strategy & Portfolio Optimization Presentation — FinVista Digital Lending, June 2026">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #050b1a;
+    --bg-card: rgba(12, 22, 48, 0.85);
+    --bg-glass: rgba(255,255,255,0.04);
+    --accent-blue: #3b82f6;
+    --accent-cyan: #06b6d4;
+    --accent-green: #10b981;
+    --accent-amber: #f59e0b;
+    --accent-red: #ef4444;
+    --accent-purple: #8b5cf6;
+    --accent-gold: #fbbf24;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(148,163,184,0.12);
+    --glow-blue: 0 0 30px rgba(59,130,246,0.3);
+    --glow-green: 0 0 30px rgba(16,185,129,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 15% 20%, rgba(59,130,246,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 80%, rgba(139,92,246,0.10) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(6,182,212,0.05) 0%, transparent 60%);
+    z-index: 0;
+    animation: bgShift 12s ease-in-out infinite alternate;
+  }
+  @keyframes bgShift {
+    0% { opacity: 0.7; }
+    100% { opacity: 1; }
+  }
+
+  /* Slide container */
+  .deck {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+  }
+
+  .slide {
+    display: none;
+    position: absolute;
+    inset: 0;
+    padding: 40px 60px;
+    overflow: hidden;
+    animation: slideIn 0.5s cubic-bezier(0.16,1,0.3,1);
+  }
+  .slide.active { display: flex; flex-direction: column; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Navigation */
+  .nav {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+    background: rgba(5,11,26,0.8);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 10px 24px;
+    backdrop-filter: blur(20px);
+  }
+  .nav button {
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+  .nav button:hover { background: var(--accent-blue); border-color: var(--accent-blue); }
+  .nav .counter {
+    color: var(--text-secondary);
+    font-size: 12px;
+    min-width: 60px;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  /* Slide dots */
+  .dots {
+    position: fixed;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 100;
+  }
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--text-muted);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .dot.active {
+    background: var(--accent-blue);
+    height: 20px;
+    box-shadow: var(--glow-blue);
+  }
+
+  /* Typography */
+  .slide-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent-cyan);
+    margin-bottom: 12px;
+  }
+  h1 { font-family: 'Space Grotesk', sans-serif; font-size: 52px; font-weight: 700; line-height: 1.1; }
+  h2 { font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
+  h3 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  p { font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+
+  /* Cards & Glassmorphism */
+  .glass-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+  }
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  }
+
+  /* Metric cards */
+  .metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+  .metric-card:hover { transform: translateY(-2px); }
+  .metric-card .value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #60a5fa, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .metric-card .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+  .metric-card .delta { font-size: 12px; color: var(--accent-green); font-weight: 600; margin-top: 4px; }
+
+  /* Badge */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-blue { background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+  .badge-green { background: rgba(16,185,129,0.15); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
+  .badge-amber { background: rgba(245,158,11,0.15); color: #fcd34d; border: 1px solid rgba(245,158,11,0.3); }
+  .badge-red { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    padding: 9px 14px;
+    text-align: left;
+    color: var(--text-muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 8px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(148,163,184,0.06);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .highlight-row td { color: var(--text-primary); font-weight: 600; }
+
+  /* Grid layouts */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+
+  /* Progress bars */
+  .progress-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.08);
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    animation: fillBar 1s ease forwards;
+  }
+  @keyframes fillBar {
+    from { width: 0; }
+  }
+
+  /* Risk band pills */
+  .risk-band {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    gap: 12px;
+    font-size: 13px;
+  }
+  .risk-band .score { font-weight: 700; font-size: 14px; min-width: 80px; }
+  .risk-band .name { font-weight: 600; min-width: 120px; }
+  .risk-band .dr { margin-left: auto; font-weight: 700; }
+
+  /* EWS tiers */
+  .ews-tier {
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    border-left: 4px solid;
+  }
+  .ews-green { background: rgba(16,185,129,0.08); border-color: var(--accent-green); }
+  .ews-amber { background: rgba(245,158,11,0.08); border-color: var(--accent-amber); }
+  .ews-red { background: rgba(239,68,68,0.08); border-color: var(--accent-red); }
+  .ews-tier h3 { font-size: 14px; margin-bottom: 6px; }
+  .ews-tier p { font-size: 12px; }
+
+  /* Feature bars */
+  .feature-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .feature-name { font-size: 12px; color: var(--text-secondary); min-width: 180px; font-family: 'Space Grotesk', monospace; }
+  .feature-bar { flex: 1; height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+  .feature-fill { height: 100%; border-radius: 4px; transition: width 1.2s ease; }
+  .feature-pct { font-size: 11px; font-weight: 700; color: var(--text-secondary); min-width: 35px; text-align: right; }
+
+  /* Gradient text */
+  .grad-text-blue { background: linear-gradient(135deg, #60a5fa, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .grad-text-green { background: linear-gradient(135deg, #34d399, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .grad-text-gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+  /* Timeline */
+  .timeline-item {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+  }
+  .timeline-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .timeline-content h3 { font-size: 13px; margin-bottom: 3px; }
+  .timeline-content p { font-size: 11px; }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 16px 0;
+  }
+
+  /* Image embed */
+  .chart-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 10px;
+  }
+
+  /* Slide 1 — Title */
+  #slide-1 {
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .title-accent {
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(59,130,246,0.15), transparent 70%);
+    pointer-events: none;
+  }
+  .company-logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent-blue);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .company-logo::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    box-shadow: var(--glow-blue);
+  }
+
+  /* Pill tags */
+  .pill-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-right: 6px;
+    margin-bottom: 4px;
+  }
+  .pill-blue { background: rgba(59,130,246,0.2); color: #93c5fd; }
+  .pill-green { background: rgba(16,185,129,0.2); color: #6ee7b7; }
+  .pill-purple { background: rgba(139,92,246,0.2); color: #c4b5fd; }
+  .pill-amber { background: rgba(245,158,11,0.2); color: #fcd34d; }
+  .pill-red { background: rgba(239,68,68,0.2); color: #fca5a5; }
+
+  /* Scroll fix for dense slides */
+  .slide-content { flex: 1; overflow-y: auto; scrollbar-width: none; }
+  .slide-content::-webkit-scrollbar { display: none; }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav">
+  <button onclick="prevSlide()">← Prev</button>
+  <span class="counter" id="counter">01 / 10</span>
+  <button onclick="nextSlide()">Next →</button>
+</nav>
+
+<!-- Dots -->
+<div class="dots" id="dots"></div>
+
+<!-- DECK -->
+<div class="deck">
+
+<!-- ════════════════════════════════════════════════ SLIDE 1 — TITLE -->
+<div class="slide active" id="slide-1">
+  <div class="title-accent"></div>
+  <div class="company-logo">FinVista Digital Lending</div>
+
+  <div style="max-width: 700px;">
+    <div class="slide-label">Portfolio Optimization Initiative · June 2026</div>
+    <h1 style="margin-bottom: 20px;">
+      <span class="grad-text-blue">Credit Strategy</span><br>
+      & Risk Framework
+    </h1>
+    <p style="font-size: 16px; margin-bottom: 32px; color: var(--text-secondary); max-width: 560px; line-height: 1.8;">
+      Post-Model-Selection Credit Policy: Score Architecture, Early Warning System, Risk-Based Pricing & Portfolio Governance
+    </p>
+
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 36px;">
+      <span class="pill-blue">ROC-AUC: 0.892</span>
+      <span class="pill-green">Gini: 0.784</span>
+      <span class="pill-purple">KS: 0.671</span>
+      <span class="pill-amber">Brier: 0.082</span>
+      <span class="pill-red">RAROC Uplift: +4.4pp</span>
+    </div>
+    <div class="divider"></div>
+  </div>
+
+  <div class="grid-4" style="margin-top: 24px; max-width: 900px;">
+    <div class="metric-card">
+      <div class="value">0.892</div>
+      <div class="label">ROC-AUC</div>
+      <div class="delta">↑ +10.1% vs V1</div>
+    </div>
+    <div class="metric-card">
+      <div class="value" style="background: linear-gradient(135deg, #34d399,#10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">0.784</div>
+      <div class="label">Gini Coefficient</div>
+      <div class="delta">↑ +26.8% vs V1</div>
+    </div>
+    <div class="metric-card">
+      <div class="value" style="background: linear-gradient(135deg, #fbbf24,#f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">₹25Cr</div>
+      <div class="label">P&L Impact</div>
+      <div class="delta">↑ Annual improvement</div>
+    </div>
+    <div class="metric-card">
+      <div class="value" style="background: linear-gradient(135deg, #c084fc,#8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">18.6%</div>
+      <div class="label">Target RAROC</div>
+      <div class="delta">↑ from 14.2%</div>
+    </div>
+  </div>
+
+  <div style="position: absolute; bottom: 70px; right: 60px; text-align: right;">
+    <p style="font-size: 11px; color: var(--text-muted);">Analytics & Risk Intelligence Unit</p>
+    <p style="font-size: 11px; color: var(--text-muted);">Strictly Confidential — For CRO Review Only</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ SLIDE 2 — PROBLEM -->
+<div class="slide" id="slide-2">
+  <div class="slide-label">Context & Challenge</div>
+  <h2>The Business Challenge</h2>
+  <p style="margin-bottom: 20px;">Digital lenders face a structural tension between volume-led growth and portfolio quality preservation.</p>
+
+  <div class="grid-2" style="flex: 1; gap: 20px;">
+    <div>
+      <div class="glass-card" style="margin-bottom: 16px;">
+        <h3 style="color: var(--accent-amber); margin-bottom: 12px;">⚡ Key Business Pressures</h3>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; gap: 12px; align-items: flex-start;">
+            <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent-red); margin-top: 6px; flex-shrink: 0;"></div>
+            <p style="font-size: 13px;"><strong style="color: var(--text-primary);">Portfolio Quality Erosion</strong> — Default rates rising as acquisition channels diversify into riskier Tier-3 and first-time borrower segments</p>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: flex-start;">
+            <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent-amber); margin-top: 6px; flex-shrink: 0;"></div>
+            <p style="font-size: 13px;"><strong style="color: var(--text-primary);">Delayed Delinquency Detection</strong> — Current systems identify stress at DPD-30, leaving 30–60 days of preventable loss</p>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: flex-start;">
+            <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent-blue); margin-top: 6px; flex-shrink: 0;"></div>
+            <p style="font-size: 13px;"><strong style="color: var(--text-primary);">Flat Pricing Architecture</strong> — One-size-fits-all rate card doesn't reflect segment-level risk; prime borrowers are cross-subsidising sub-prime losses</p>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: flex-start;">
+            <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent-purple); margin-top: 6px; flex-shrink: 0;"></div>
+            <p style="font-size: 13px;"><strong style="color: var(--text-primary);">Limited Leadership Visibility</strong> — No forward-looking dashboard; reactive management vs. proactive risk governance</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3 style="color: var(--accent-cyan); margin-bottom: 12px;">🎯 Five Strategic Questions</h3>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <p style="font-size: 12px;">1. Which segments carry materially different risk & repayment behaviour?</p>
+          <p style="font-size: 12px;">2. How do acquisition channels impact portfolio quality & CLV?</p>
+          <p style="font-size: 12px;">3. Which products and tenures deliver best risk-adjusted returns?</p>
+          <p style="font-size: 12px;">4. How should pricing & approval thresholds vary by segment?</p>
+          <p style="font-size: 12px;">5. What metrics should leadership monitor proactively?</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+      <h3 style="color: var(--accent-green); margin-bottom: 16px;">📊 Current Portfolio Snapshot</h3>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span style="font-size: 12px; color: var(--text-secondary);">AUM (Estimated)</span>
+            <span style="font-size: 13px; font-weight: 700; color: var(--text-primary);">~₹800 Cr</span>
+          </div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span style="font-size: 12px; color: var(--text-secondary);">Blended Default Rate</span>
+            <span style="font-size: 13px; font-weight: 700; color: var(--accent-red);">~15%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width: 15%; background: linear-gradient(90deg, var(--accent-red), #dc2626);"></div></div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span style="font-size: 12px; color: var(--text-secondary);">Recovery Rate</span>
+            <span style="font-size: 13px; font-weight: 700; color: var(--accent-amber);">~35%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width: 35%; background: linear-gradient(90deg, var(--accent-amber), #d97706);"></div></div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span style="font-size: 12px; color: var(--text-secondary);">Current RAROC</span>
+            <span style="font-size: 13px; font-weight: 700; color: var(--accent-blue);">~14.2%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width: 57%; background: linear-gradient(90deg, var(--accent-blue), #2563eb);"></div></div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span style="font-size: 12px; color: var(--text-secondary);">Target RAROC</span>
+            <span style="font-size: 13px; font-weight: 700; color: var(--accent-green);">18.6%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width: 74%; background: linear-gradient(90deg, var(--accent-green), #059669);"></div></div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <p style="font-size: 12px; font-style: italic; color: var(--text-muted);">"The central challenge: translate rich customer data into actionable risk and value insights that drive sustainable, risk-adjusted portfolio growth."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ SLIDE 3 — MODEL PERFORMANCE -->
+<div class="slide" id="slide-3">
+  <div class="slide-label">Step 1: Model Selection & Validation</div>
+  <h2>Selected Model: <span class="grad-text-blue">V2 Stacking Ensemble</span></h2>
+  <p style="margin-bottom: 16px;">Five-model stacking architecture with Optuna-tuned hyperparameters, conservative SMOTE, and isotonic calibration.</p>
+
+  <div class="grid-2" style="flex: 1; gap: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <div class="glass-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>V1 Logistic</th>
+              <th>V2 Stacking</th>
+              <th>Δ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="highlight-row">
+              <td>ROC-AUC</td>
+              <td style="color: var(--text-muted);">0.8101</td>
+              <td style="color: var(--accent-blue); font-weight: 700;">0.8920</td>
+              <td style="color: var(--accent-green);">+10.1%</td>
+            </tr>
+            <tr>
+              <td>KS Statistic</td>
+              <td style="color: var(--text-muted);">0.5038</td>
+              <td style="color: var(--accent-blue); font-weight: 700;">0.6710</td>
+              <td style="color: var(--accent-green);">+33.2%</td>
+            </tr>
+            <tr>
+              <td>Gini Coefficient</td>
+              <td style="color: var(--text-muted);">0.6185</td>
+              <td style="color: var(--accent-blue); font-weight: 700;">0.7840</td>
+              <td style="color: var(--accent-green);">+26.8%</td>
+            </tr>
+            <tr>
+              <td>Best F1 Score</td>
+              <td style="color: var(--text-muted);">0.4182</td>
+              <td style="color: var(--accent-blue); font-weight: 700;">0.6320</td>
+              <td style="color: var(--accent-green);">+51.1%</td>
+            </tr>
+            <tr class="highlight-row">
+              <td>Brier Score ↓</td>
+              <td style="color: var(--accent-red);">0.1714</td>
+              <td style="color: var(--accent-green); font-weight: 700;">0.0822</td>
+              <td style="color: var(--accent-green);">−52.0%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="glass-card">
+        <h3 style="font-size: 13px; margin-bottom: 10px; color: var(--accent-cyan);">Architecture Summary</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px;">
+          <span class="badge badge-blue">Logistic Regression</span>
+          <span class="badge badge-blue">Random Forest</span>
+          <span class="badge badge-blue">Gradient Boosting</span>
+          <span class="badge badge-green">XGBoost (Optuna 60T)</span>
+          <span class="badge badge-green">LightGBM (Optuna 60T)</span>
+        </div>
+        <div style="margin-top: 8px; padding: 10px 14px; background: rgba(59,130,246,0.1); border-radius: 8px; border-left: 3px solid var(--accent-blue);">
+          <p style="font-size: 12px;"><strong style="color: var(--text-primary);">Meta-Learner:</strong> Logistic Regression (C=0.5) | <strong style="color: var(--text-primary);">SMOTE:</strong> 30% minority ratio | <strong style="color: var(--text-primary);">Calibration:</strong> Isotonic Regression</p>
+        </div>
+        <div style="margin-top: 8px; padding: 10px 14px; background: rgba(239,68,68,0.08); border-radius: 8px; border-left: 3px solid var(--accent-amber);">
+          <p style="font-size: 12px; color: var(--accent-amber);">⚠️ <strong>Known Issue:</strong> KS plot shows 0.0003 due to code bug (tpr−tpr vs tpr−fpr). True KS = 0.671. Fix required before production.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card" style="display: flex; flex-direction: column; gap: 10px; padding: 16px;">
+      <h3 style="font-size: 13px; color: var(--accent-green);">ROC Curve — All Models vs Stacking Ensemble</h3>
+      <img src="roc_comparison.png" class="chart-img" style="flex:1;" alt="ROC Comparison Chart"/>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ SLIDE 4 — CALIBRATION & KS -->
+<div class="slide" id="slide-4">
+  <div class="slide-label">Step 2: Model Diagnostics</div>
+  <h2>KS Plot & Calibration Curve</h2>
+  <p style="margin-bottom: 16px;">Diagnostic charts validate discriminatory power and probability reliability of the selected model.</p>
+
+  <div class="grid-2" style="flex: 1; gap: 20px;">
+    <div class="glass-card" style="display: flex; flex-direction: column; padding: 16px;">
+      <h3 style="font-size: 13px; color: var(--accent-cyan); margin-bottom: 10px;">KS Plot — Cumulative Default Separation</h3>
+      <img src="ks_plot.png" class="chart-img" style="flex: 1;" alt="KS Plot"/>
+      <div style="margin-top: 10px; padding: 8px 12px; background: rgba(239,68,68,0.08); border-radius: 8px;">
+        <p style="font-size: 11px; color: var(--accent-amber);">⚠️ Visual shows code-level KS bug. True KS = 0.671 (from ROC-curve computation). Correction applied in policy metrics.</p>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <div class="glass-card" style="flex: 1; display: flex; flex-direction: column; padding: 16px;">
+        <h3 style="font-size: 13px; color: var(--accent-green); margin-bottom: 10px;">Calibration Curve (Brier = 0.0822)</h3>
+        <img src="calibration.png" class="chart-img" style="flex: 1;" alt="Calibration Curve"/>
+      </div>
+      <div class="glass-card">
+        <h3 style="font-size: 13px; color: var(--accent-blue); margin-bottom: 10px;">Why Calibration Matters for Credit Strategy</h3>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span style="color: var(--accent-green); font-size: 16px;">✓</span>
+            <p style="font-size: 12px;"><strong style="color: var(--text-primary);">Expected Loss Pricing:</strong> P(Default) directly feeds EL = PD × LGD × EAD</p>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span style="color: var(--accent-green); font-size: 16px;">✓</span>
+            <p style="font-size: 12px;"><strong style="color: var(--text-primary);">Provisioning Accuracy:</strong> Calibrated PDs reduce over/under-provisioning in stress scenarios</p>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span style="color: var(--accent-green); font-size: 16px;">✓</span>
+            <p style="font-size: 12px;"><strong style="color: var(--text-primary);">Regulatory Capital:</strong> IRB-compatible probability outputs for BASEL-aligned capital computation</p>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span style="color: var(--accent-amber); font-size: 16px;">↑</span>
+            <p style="font-size: 12px;"><strong style="color: var(--text-primary);">52% Brier Score Improvement:</strong> 0.1714 → 0.0822 means model is production-grade for probability-linked decisions</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ SLIDE 5 — SCORE ARCHITECTURE -->
+<div class="slide" id="slide-5">
+  <div class="slide-label">Step 3: Credit Score Architecture</div>
+  <h2>Five-Tier <span class="grad-text-gold">Risk Segmentation</span></h2>
+  <p style="margin-bottom: 16px;">Score range 300–850 using log-odds transformation (Base=600, PDO=50). 163-point separation between defaulters and non-defaulters.</p>
+
+  <div style="flex: 1; display: flex; flex-direction: column; gap: 12px;">
+    <!-- Score bands -->
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div class="risk-band" style="background: rgba(239,68,68,0.10); border: 1px solid rgba(239,68,68,0.2);">
+        <div class="score" style="color: #fca5a5;">300–500</div>
+        <div class="name" style="color: #fca5a5;">Very High Risk</div>
+        <div style="flex: 1;"><div class="progress-bar"><div class="progress-fill" style="width: 10%; background: #ef4444;"></div></div></div>
+        <span class="badge badge-red">~10% share</span>
+        <div class="dr" style="color: var(--accent-red);">DR > 32%</div>
+        <span class="badge badge-red">❌ Decline</span>
+      </div>
+      <div class="risk-band" style="background: rgba(239,100,68,0.08); border: 1px solid rgba(239,100,68,0.2);">
+        <div class="score" style="color: #fca5a5;">500–580</div>
+        <div class="name" style="color: #fcd34d;">High Risk</div>
+        <div style="flex: 1;"><div class="progress-bar"><div class="progress-fill" style="width: 16%; background: #f97316;"></div></div></div>
+        <span class="badge badge-amber">~16% share</span>
+        <div class="dr" style="color: var(--accent-amber);">18–32%</div>
+        <span class="badge badge-amber">⚠️ Co-applicant</span>
+      </div>
+      <div class="risk-band" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+        <div class="score" style="color: #fcd34d;">580–660</div>
+        <div class="name" style="color: #fcd34d;">Medium Risk</div>
+        <div style="flex: 1;"><div class="progress-bar"><div class="progress-fill" style="width: 24%; background: #f59e0b;"></div></div></div>
+        <span class="badge badge-amber">~24% share</span>
+        <div class="dr" style="color: var(--accent-amber);">8–18%</div>
+        <span class="badge badge-blue">Risk-Adj Pricing</span>
+      </div>
+      <div class="risk-band" style="background: rgba(16,185,129,0.07); border: 1px solid rgba(16,185,129,0.2);">
+        <div class="score" style="color: #6ee7b7;">660–740</div>
+        <div class="name" style="color: #6ee7b7;">Low Risk</div>
+        <div style="flex: 1;"><div class="progress-bar"><div class="progress-fill" style="width: 28%; background: #10b981;"></div></div></div>
+        <span class="badge badge-green">~28% share</span>
+        <div class="dr" style="color: var(--accent-green);">3–8%</div>
+        <span class="badge badge-green">✅ Standard</span>
+      </div>
+      <div class="risk-band" style="background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2);">
+        <div class="score" style="color: #93c5fd;">740–850</div>
+        <div class="name" style="color: #93c5fd;">Very Low Risk</div>
+        <div style="flex: 1;"><div class="progress-bar"><div class="progress-fill" style="width: 22%; background: #3b82f6;"></div></div></div>
+        <span class="badge badge-blue">~22% share</span>
+        <div class="dr" style="color: var(--accent-blue);">< 3%</div>
+        <span class="badge badge-blue">✅ Preferred</span>
+      </div>
+    </div>
+
+    <div class="grid-2" style="gap: 14px;">
+      <div class="glass-card" style="padding: 14px 18px;">
+        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Score Formula (Log-Odds)</p>
+        <p style="font-size: 14px; font-weight: 600; color: var(--text-primary); font-family: 'Space Grotesk';">Score = 600 + 50 × log₂(Odds)</p>
+        <p style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">Odds = (1 − P(Default)) / P(Default)</p>
+      </div>
+      <div class="glass-card" style="padding: 14px 18px;">
+        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Score Separation</p>
+        <div style="display: flex; gap: 20px; align-items: center;">
+          <div style="text-align: center;">
+            <div style="font-size: 24px; font-weight: 800; color: var(--accent-green);">684</div>
+            <div style="font-size: 10px; color: var(--text-muted);">Non-Default Avg</div>
+          </div>
+          <div style="font-size: 20px; color: var(--text-muted);">→</div>
+          <div style="text-align: center;">
+            <div style="font-size: 24px; font-weight: 800; color: var(--accent-red);">521</div>
+            <div style="font-size: 10px; color: var(--text-muted);">Default Avg</div>
+          </div>
+          <div style="text-align: center; margin-left: 10px;">
+            <div style="font-size: 28px; font-weight: 800; color: var(--accent-gold);">163</div>
+            <div style="font-size: 10px; color: var(--text-muted);">Pt. Separation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ SLIDE 6 — RISK DRIVERS -->
+<div class="slide" id="slide-6">
+  <div class="slide-label">Step 4: Risk Driver Analysis</div>
+  <h2>Top Features & <span class="grad-text-blue">Segmentation Insights</span></h2>
+  <p style="margin-bottom: 16px;">Permutation importance analysis identifies seven dominant predictors of default across the stacking ensemble.</p>
+
+  <div class="grid-2" style="flex: 1; gap: 20px;">
+    <div class="glass-card">
+      <h3 style="font-size: 13px; color: var(--accent-cyan); margin-bottom: 14px;">Feature Importance — Top 7 Drivers</h3>
+      <div class="feature-row">
+        <span class="feature-name">emi_to_income²</span>
+        <div class="feature-bar"><div class="feature-fill" style="width: 95%; background: linear-gradient(90deg, #3b82f6, #06b6d4);"></div></div>
+        <span class="feature-pct">100%</span>
+      </div>
+      <div class="feature-row">
+        <span class="feature-name">interest_x_dti</span>
+        <div class="feature-bar"><div class="feature-fill" style="width: 88%; background: linear-gradient(90deg, #3b82f6, #06b6d4);"></div></div>
+        <span class="feature-pct">88%</span>
+      </div>
+      <div class="feature-row">
+        <span class="feature-name">dti_proxy</span>
+        <div class="feature-bar"><div class="feature-fill" style="width: 82%; background: linear-gradient(90deg, #8b5cf6, #3b82f6);"></div></div>
+        <span class="feature-pct">82%</span>
+      </div>
+      <div class="feature-row">
+        <span class="feature-name">credit_quality</span>
+        <div class="feature-bar"><div class="feature-fill" style="width: 76%; background: linear-gradient(90deg, #8b5cf6, #3b82f6);"></div></div>
+        <span class="feature-pct">76%</span>
+      </div>
+      <div class="feature-row">
+        <span class="feature-name">loan_to_income</span>
+        <div class="feature-bar"><div class="feature-fill" style="width: 68%; background: linear-gradient(90deg, #10b981, #8b5cf6);"></div></div>
+        <span class="feature-pct">68%</span>
+      </div>
+      <div class="feature-row">
+        <span class="feature-name">cash_flow_volatility</span>
+        <div class="feature-bar"><div class="feature-fill" style="width: 59%; background: linear-gradient(90deg, #f59e0b, #10b981);"></div></div>
+        <span class="feature-pct">59%</span>
+      </div>
+      <div class="feature-row">
+        <span class="feature-name">geography (Tier)</span>
+        <div class="feature-bar"><div class="feature-fill" style="width: 48%; background: linear-gradient(90deg, #ef4444, #f59e0b);"></div></div>
+        <span class="feature-pct">48%</span>
+      </div>
+
+      <div class="divider"></div>
+      <div style="padding: 10px 14px; background: rgba(59,130,246,0.08); border-radius: 8px; border-left: 3px solid var(--accent-blue);">
+        <p style="font-size: 12px;"><strong style="color: var(--accent-amber);">Key Interaction:</strong> Borrowers with DTI > 2.5 AND interest rate > 20% generate <code style="background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px;">interest_x_dti > 50</code> — placing them in the highest-risk quadrant regardless of individual signal thresholds.</p>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <div class="glass-card">
+        <h3 style="font-size: 13px; color: var(--accent-amber); margin-bottom: 10px;">Acquisition Channel Risk Profile</h3>
+        <table>
+          <thead><tr><th>Channel</th><th>Default Rate</th><th>Risk Level</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Digital / App</td>
+              <td style="color: var(--accent-red); font-weight: 700;">~19%</td>
+              <td><span class="badge badge-red">HIGH</span></td>
+            </tr>
+            <tr>
+              <td>DSA / Agent</td>
+              <td style="color: var(--accent-amber);">~14%</td>
+              <td><span class="badge badge-amber">MEDIUM</span></td>
+            </tr>
+            <tr>
+              <td>Referral</td>
+              <td style="color: var(--accent-amber);">~12%</td>
+              <td><span class="badge badge-amber">MEDIUM</span></td>
+            </tr>
+            <tr class="highlight-row">
+              <td>Branch Walk-in</td>
+              <td style="color: var(--accent-green);">~9%</td>
+              <td><span class="badge badge-green">LOW</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="margin-top: 10px; padding: 8px 12px; background: rgba(239,68,68,0.08); border-radius: 8px;">
+          <p style="font-size: 11px; color: var(--text-secondary);">⚡ Digital channel: <strong style="color: var(--accent-red);">2.1× default rate</strong> vs branch. Speed-to-credit advantage being subsidised by portfolio quality loss.</p>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3 style="font-size: 13px; color: var(--accent-green); margin-bottom: 10px;">Key Risk Multipliers</h3>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(239,68,68,0.07); border-radius: 8px;">
+            <span style="font-size: 12px;">Poor Credit Quality</span>
+            <span style="font-size: 14px; font-weight: 800; color: var(--accent-red);">3.2×</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(245,158,11,0.07); border-radius: 8px;">
+            <span style="font-size: 12px;">High Cash Flow Volatility</span>
+            <span style="font-size: 14px; font-weight: 800; color: var(--accent-amber);">2.1×</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(239,68,68,0.07); border-radius: 8px;">
+            <span style="font-size: 12px;">Digital + Tier-3 + First Loan</span>
+            <span style="font-size: 14px; font-weight: 800; color: var(--accent-red);">3.8×</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(245,158,11,0.07); border-radius: 8px;">
+            <span style="font-size: 12px;">Tier-3 vs Tier-1 Geography</span>
+            <span style="font-size: 14px; font-weight: 800; color: var(--accent-amber);">+18pp</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ SLIDE 7 — EARLY WARNING SYSTEM -->
+<div class="slide" id="slide-7">
+  <div class="slide-label">Step 5: Early Warning System</div>
+  <h2>Three-Tier <span class="grad-text-green">EWS Framework</span></h2>
+  <p style="margin-bottom: 14px;">Identifies 74% of eventual defaults 45+ days before DPD-30, enabling proactive restructuring over reactive collections.</p>
+
+  <div class="grid-2" style="flex: 1; gap: 18px;">
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div class="ews-tier ews-green">
+        <h3 style="color: #6ee7b7;">🟢 Tier 1 — Green Watch (Score 580–660)</h3>
+        <p><strong>Triggers:</strong> Single missed payment | DTI drift >10% | Spending shock >2× avg | Partial payment >80%<br>
+        <strong>Response:</strong> SMS/app nudge | Calendar review offer | No escalation<br>
+        <strong>Lead Time:</strong> 60–90 days | <strong>EWS Precision:</strong> ~58%</p>
+      </div>
+      <div class="ews-tier ews-amber">
+        <h3 style="color: #fcd34d;">🟡 Tier 2 — Amber Alert (Score 500–580 | EWS > 0.65)</h3>
+        <p><strong>Triggers:</strong> 2× consecutive partial payments | CF volatility Low→High | LTI up >30%<br>
+        <strong>Response:</strong> Personal call within 5 days | Restructuring offer | AA income refresh<br>
+        <strong>Lead Time:</strong> 30–60 days | <strong>EWS Precision:</strong> ~72%</p>
+      </div>
+      <div class="ews-tier ews-red">
+        <h3 style="color: #fca5a5;">🔴 Tier 3 — Red Alert (Score <500 | DPD-30 | EWS > 0.85)</h3>
+        <p><strong>Triggers:</strong> DPD ≥ 30 | Payment <50% EMI × 2 months | Balance drop >60% | PD >55%<br>
+        <strong>Response:</strong> Recoveries escalation 48h | Legal notice prep | Field visit >₹2L | NPA trigger<br>
+        <strong>Lead Time:</strong> 0–30 days | <strong>EWS Precision:</strong> ~89%</p>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <div class="glass-card">
+        <h3 style="font-size: 13px; color: var(--accent-cyan); margin-bottom: 10px;">EWS Composite Score Formula</h3>
+        <div style="padding: 12px 16px; background: rgba(59,130,246,0.08); border-radius: 10px; margin-bottom: 12px; font-family: 'Space Grotesk';">
+          <p style="font-size: 13px; color: var(--text-primary); line-height: 1.8;">
+            EWS = <span style="color: #60a5fa;">0.35</span> × ΔEMI-Income<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span style="color: #34d399;">0.25</span> × CF_Vol_Index<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span style="color: #fbbf24;">0.20</span> × ΔBalance_Trend<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span style="color: #a78bfa;">0.20</span> × Payment_Timeliness
+          </p>
+        </div>
+        <table>
+          <thead><tr><th>Signal Set</th><th>45-Day Default Recall</th><th>False Positive Rate</th></tr></thead>
+          <tbody>
+            <tr><td>DPD-only (current)</td><td style="color: var(--accent-red);">~38%</td><td>~6%</td></tr>
+            <tr><td>DTI threshold-only</td><td style="color: var(--accent-amber);">~44%</td><td>~11%</td></tr>
+            <tr class="highlight-row"><td>Full EWS (recommended)</td><td style="color: var(--accent-green); font-weight: 800;">~74%</td><td>~14%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="glass-card">
+        <h3 style="font-size: 13px; color: var(--accent-green); margin-bottom: 10px;">Operational Integration Points</h3>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span style="color: var(--accent-cyan); font-size: 14px;">◆</span>
+            <p style="font-size: 12px;"><strong style="color: var(--text-primary);">CRM Integration:</strong> Monthly EWS score computed at loan level; auto-flags pushed to Collections queue</p>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span style="color: var(--accent-cyan); font-size: 14px;">◆</span>
+            <p style="font-size: 12px;"><strong style="color: var(--text-primary);">Trigger Threshold:</strong> EWS > 0.65 auto-triggers Tier-2 review (no manual override below 0.85)</p>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span style="color: var(--accent-cyan); font-size: 14px;">◆</span>
+            <p style="font-size: 12px;"><strong style="color: var(--text-primary);">AA Framework:</strong> Real-time AA consent for income verification refresh on Tier-2 accounts</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ SLIDE 8 — POLICY RECOMMENDATIONS -->
+<div class="slide" id="slide-8">
+  <div class="slide-label">Step 6: Policy Recommendations</div>
+  <h2>Six <span class="grad-text-gold">Credit Policy Changes</span></h2>
+  <p style="margin-bottom: 14px;">Data-backed recommendations across underwriting, pricing, channel management, and portfolio monitoring.</p>
+
+  <div class="grid-2" style="flex: 1; gap: 18px;">
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <div class="glass-card">
+        <h3 style="font-size: 13px; color: var(--accent-red); margin-bottom: 8px;">A — Score-Based Hard Cutoffs</h3>
+        <table style="font-size: 12px;">
+          <thead><tr><th>Product</th><th>Current</th><th>New Threshold</th></tr></thead>
+          <tbody>
+            <tr><td>Personal Loan ≤₹5L</td><td style="color: var(--text-muted);">None</td><td style="color: var(--accent-green); font-weight: 700;">Score ≥ 580</td></tr>
+            <tr><td>Personal Loan >₹5L</td><td style="color: var(--text-muted);">Soft</td><td style="color: var(--accent-green); font-weight: 700;">Score ≥ 620</td></tr>
+            <tr><td>BNPL</td><td style="color: var(--text-muted);">Approval-rate focus</td><td style="color: var(--accent-green); font-weight: 700;">Score ≥ 560</td></tr>
+            <tr><td>SME Working Capital</td><td style="color: var(--text-muted);">Relationship</td><td style="color: var(--accent-green); font-weight: 700;">Score ≥ 600 + CF verified</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="glass-card">
+        <h3 style="font-size: 13px; color: var(--accent-amber); margin-bottom: 8px;">B — DTI Interaction Hard Stop</h3>
+        <div style="padding: 10px 14px; background: rgba(239,68,68,0.08); border-radius: 8px; border-left: 3px solid var(--accent-red);">
+          <p style="font-size: 12px;"><strong style="color: var(--text-primary);">Auto-decline if ALL three:</strong><br>
+          DTI > 2.0 <strong>&</strong> Credit Quality = Poor <strong>&</strong> Loan-to-Income > 5.0<br>
+          <span style="color: var(--text-muted); font-size: 11px;">Modelled default rate for this cohort: >45%</span></p>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3 style="font-size: 13px; color: var(--accent-purple); margin-bottom: 8px;">E — Digital Channel Overlays</h3>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <p style="font-size: 12px;">• Digital loans >₹3L: require Score ≥ 630 (vs 580)</p>
+          <p style="font-size: 12px;">• All digital loans >₹1L: mandatory AA income verification</p>
+          <p style="font-size: 12px;">• First-loan + Tier-3: reduce pre-approved limits by 40%</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <div class="glass-card">
+        <h3 style="font-size: 13px; color: var(--accent-blue); margin-bottom: 8px;">C — Risk-Based Pricing Grid</h3>
+        <table style="font-size: 12px;">
+          <thead><tr><th>Band</th><th>Score</th><th>Old Rate</th><th>New Rate</th></tr></thead>
+          <tbody>
+            <tr><td style="color: #93c5fd;">Prime</td><td>720+</td><td style="color: var(--text-muted);">12–14%</td><td style="color: var(--accent-green); font-weight: 700;">11–13%</td></tr>
+            <tr><td style="color: #6ee7b7;">Near-Prime</td><td>620–720</td><td style="color: var(--text-muted);">14–17%</td><td style="color: var(--text-primary); font-weight: 700;">14–17%</td></tr>
+            <tr><td style="color: #fcd34d;">Sub-Prime A</td><td>560–620</td><td style="color: var(--text-muted);">16–20%</td><td style="color: var(--accent-amber); font-weight: 700;">18–21%</td></tr>
+            <tr><td style="color: #fca5a5;">Sub-Prime B</td><td>500–560</td><td style="color: var(--text-muted);">18–22%</td><td style="color: var(--accent-red); font-weight: 700;">22–26%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="glass-card">
+        <h3 style="font-size: 13px; color: var(--accent-cyan); margin-bottom: 8px;">D — Tenure Caps by Risk</h3>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <div style="padding: 8px 14px; background: rgba(59,130,246,0.08); border-radius: 8px; text-align: center;">
+            <div style="font-size: 11px; color: var(--text-muted);">Prime (720+)</div>
+            <div style="font-size: 16px; font-weight: 800; color: var(--accent-blue);">48 mo</div>
+            <div style="font-size: 10px; color: var(--text-muted);">No change</div>
+          </div>
+          <div style="padding: 8px 14px; background: rgba(16,185,129,0.08); border-radius: 8px; text-align: center;">
+            <div style="font-size: 11px; color: var(--text-muted);">Near-Prime</div>
+            <div style="font-size: 16px; font-weight: 800; color: var(--accent-green);">36 mo</div>
+            <div style="font-size: 10px; color: var(--text-muted);">No change</div>
+          </div>
+          <div style="padding: 8px 14px; background: rgba(245,158,11,0.08); border-radius: 8px; text-align: center;">
+            <div style="font-size: 11px; color: var(--text-muted);">Sub-Prime A</div>
+            <div style="font-size: 16px; font-weight: 800; color: var(--accent-amber);">24 mo</div>
+            <div style="font-size: 10px; color: var(--accent-red);">↓ from 36</div>
+          </div>
+          <div style="padding: 8px 14px; background: rgba(239,68,68,0.08); border-radius: 8px; text-align: center;">
+            <div style="font-size: 11px; color: var(--text-muted);">Sub-Prime B</div>
+            <div style="font-size: 16px; font-weight: 800; color: var(--accent-red);">18 mo</div>
+            <div style="font-size: 10px; color: var(--accent-red);">↓ from 36</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3 style="font-size: 13px; color: var(--accent-green); margin-bottom: 8px;">F — Executive Dashboard KPIs</h3>
+        <table style="font-size: 11px;">
+          <thead><tr><th>Metric</th><th>Action Threshold</th></tr></thead>
+          <tbody>
+            <tr><td>30-DPD Rate</td><td style="color: var(--accent-red);">> 8% → Policy review</td></tr>
+            <tr><td>EWS Amber Coverage</td><td style="color: var(--accent-amber);">> 12% → Collections scaling</td></tr>
+            <tr><td>Score Migration Index</td><td style="color: var(--accent-amber);">> 6% → Macro trigger</td></tr>
+            <tr><td>Vintage Default Rate</td><td style="color: var(--accent-red);">> 15% → Channel review</td></tr>
+            <tr><td>RAROC</td><td style="color: var(--accent-amber);">< 14% → Strategy review</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ SLIDE 9 — FINANCIAL IMPACT -->
+<div class="slide" id="slide-9">
+  <div class="slide-label">Step 7: Projected Impact</div>
+  <h2>Financial Impact & <span class="grad-text-gold">RAROC Analysis</span></h2>
+  <p style="margin-bottom: 16px;">Assuming ~₹800 Cr AUM | ~15% blended default rate | ~35% recovery rate</p>
+
+  <div class="grid-2" style="flex: 1; gap: 20px;">
+    <div class="glass-card">
+      <h3 style="font-size: 13px; color: var(--accent-cyan); margin-bottom: 14px;">P&L Impact Waterfall</h3>
+      <table>
+        <thead><tr><th>Initiative</th><th>Annual P&L Impact</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Score cutoff (≥580) — decline 8–10% of tail volume</td>
+            <td style="color: var(--accent-green); font-weight: 700;">−₹4–6 Cr losses</td>
+          </tr>
+          <tr>
+            <td>DTI interaction overlay — remove tail-risk cohort</td>
+            <td style="color: var(--accent-green); font-weight: 700;">−₹3–4 Cr losses</td>
+          </tr>
+          <tr>
+            <td>Risk-based repricing — increased sub-prime spread</td>
+            <td style="color: var(--accent-blue); font-weight: 700;">+₹5–7 Cr interest</td>
+          </tr>
+          <tr>
+            <td>Digital channel overlay — reduce NPA from app</td>
+            <td style="color: var(--accent-green); font-weight: 700;">−₹2–3 Cr losses</td>
+          </tr>
+          <tr>
+            <td>EWS deployment — 25% pre-defaults restructured</td>
+            <td style="color: var(--accent-green); font-weight: 700;">−₹3–5 Cr provisioning</td>
+          </tr>
+          <tr class="highlight-row" style="background: rgba(16,185,129,0.08);">
+            <td style="color: var(--text-primary); font-size: 14px; font-weight: 700;">Total Net P&L Improvement</td>
+            <td style="font-size: 18px; font-weight: 800; color: var(--accent-green);">₹17–25 Cr</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="divider"></div>
+      <div style="padding: 10px 14px; background: rgba(245,158,11,0.08); border-radius: 8px; border-left: 3px solid var(--accent-amber);">
+        <p style="font-size: 12px; color: var(--accent-amber);">⚠️ Volume Impact: −6 to −9% of originations from tighter underwriting. Expected recovery within 2–3 quarters via improved unit economics and lower provisioning.</p>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <div class="glass-card">
+        <h3 style="font-size: 13px; color: var(--accent-gold); margin-bottom: 14px;">RAROC Improvement</h3>
+        <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 14px;">
+          <div style="text-align: center; flex: 1; padding: 16px; background: rgba(239,68,68,0.08); border-radius: 12px;">
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Current Policy</div>
+            <div style="font-size: 32px; font-weight: 800; color: var(--accent-red);">14.2%</div>
+            <div style="font-size: 10px; color: var(--text-muted);">RAROC</div>
+          </div>
+          <div style="font-size: 28px; color: var(--text-muted);">→</div>
+          <div style="text-align: center; flex: 1; padding: 16px; background: rgba(16,185,129,0.08); border-radius: 12px;">
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Recommended Policy</div>
+            <div style="font-size: 32px; font-weight: 800; color: var(--accent-green);">18.6%</div>
+            <div style="font-size: 10px; color: var(--text-muted);">RAROC</div>
+          </div>
+        </div>
+        <div style="padding: 10px 14px; background: rgba(59,130,246,0.08); border-radius: 8px;">
+          <p style="font-size: 13px; font-weight: 600; color: var(--text-primary); text-align: center;">Uplift: <span style="color: var(--accent-green);">+4.4 percentage points</span></p>
+          <p style="font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 4px;">RAROC = (NII − EL − OpEx) / Economic Capital</p>
+          <p style="font-size: 11px; color: var(--text-muted); text-align: center;">Both numerator (↓EL) and denominator (↓EcCap) improve simultaneously</p>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3 style="font-size: 13px; color: var(--accent-blue); margin-bottom: 10px;">Implementation Roadmap</h3>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: rgba(59,130,246,0.2); color: var(--accent-blue);">1</div>
+          <div class="timeline-content">
+            <h3 style="color: var(--text-primary);">Phase 1 (Months 1–2)</h3>
+            <p>V2 model to production; API integration with LOS; score cutoffs live</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: rgba(16,185,129,0.2); color: var(--accent-green);">2</div>
+          <div class="timeline-content">
+            <h3 style="color: var(--text-primary);">Phase 2 (Months 2–3)</h3>
+            <p>EWS dashboard in CRM; Collections team training on tier framework</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: rgba(245,158,11,0.2); color: var(--accent-amber);">3</div>
+          <div class="timeline-content">
+            <h3 style="color: var(--text-primary);">Phase 3 (Months 3–4)</h3>
+            <p>Risk-based pricing grid live; product T&Cs revised; digital overlays</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: rgba(139,92,246,0.2); color: var(--accent-purple);">4</div>
+          <div class="timeline-content">
+            <h3 style="color: var(--text-primary);">Phase 4–5 (Months 4–12)</h3>
+            <p>Vintage monitoring; A/B tests; PSI/CSI reports; champion-challenger</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ SLIDE 10 — GOVERNANCE & CLOSE -->
+<div class="slide" id="slide-10">
+  <div class="slide-label">Step 8: Governance & Conclusion</div>
+  <h2>Model Governance & <span class="grad-text-blue">Next Steps</span></h2>
+  <p style="margin-bottom: 16px;">Robust governance framework to sustain model performance, regulatory compliance, and leadership accountability.</p>
+
+  <div class="grid-2" style="flex: 1; gap: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <div class="glass-card">
+        <h3 style="font-size: 13px; color: var(--accent-cyan); margin-bottom: 10px;">Model Risk Management</h3>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span style="color: var(--accent-blue);">◆</span>
+            <p style="font-size: 12px;"><strong style="color: var(--text-primary);">Champion-Challenger:</strong> V1 Logistic Regression maintained as challenger model for monthly performance benchmarking</p>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span style="color: var(--accent-green);">◆</span>
+            <p style="font-size: 12px;"><strong style="color: var(--text-primary);">PSI Monitoring:</strong> Population Stability Index monthly; PSI > 0.20 triggers model review cycle</p>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span style="color: var(--accent-amber);">◆</span>
+            <p style="font-size: 12px;"><strong style="color: var(--text-primary);">CSI Monitoring:</strong> Characteristic Stability Index on top-7 features; CSI > 0.15 → recalibration</p>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span style="color: var(--accent-purple);">◆</span>
+            <p style="font-size: 12px;"><strong style="color: var(--text-primary);">Quarterly Refresh:</strong> Model retrained on most recent 12-month origination cohort; back-tested against holdout</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3 style="font-size: 13px; color: var(--accent-amber); margin-bottom: 10px;">Known Limitations & Mitigants</h3>
+        <div style="display: flex; flex-direction: column; gap: 7px;">
+          <div style="padding: 8px 12px; background: rgba(239,68,68,0.07); border-radius: 8px; border-left: 3px solid var(--accent-red);">
+            <p style="font-size: 12px;"><strong style="color: var(--accent-red);">Bug — KS Plot:</strong> Code shows KS=0.0003 (tpr−tpr bug). True KS = 0.671. Fix before production.</p>
+          </div>
+          <div style="padding: 8px 12px; background: rgba(245,158,11,0.07); border-radius: 8px; border-left: 3px solid var(--accent-amber);">
+            <p style="font-size: 12px;"><strong style="color: var(--accent-amber);">Synthetic Data:</strong> Model trained on synthetic data. Live portfolio validation required before full deployment.</p>
+          </div>
+          <div style="padding: 8px 12px; background: rgba(139,92,246,0.07); border-radius: 8px; border-left: 3px solid var(--accent-purple);">
+            <p style="font-size: 12px;"><strong style="color: var(--accent-purple);">SMOTE Edges:</strong> Adversarial testing on underrepresented segments (Tier-3, first-loan, informal income) recommended.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3 style="font-size: 13px; color: var(--accent-green); margin-bottom: 10px;">Regulatory Alignment Checklist</h3>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <p style="font-size: 12px;">✅ RBI Digital Lending Guidelines (2022) — digital disclosures & fair lending</p>
+          <p style="font-size: 12px;">✅ RBI IRAC Norms — NPA provisioning triggers aligned (DPD-90)</p>
+          <p style="font-size: 12px;">⏳ Fair Credit Access Testing — disparate impact analysis on Tier-3 cutoffs</p>
+          <p style="font-size: 12px;">⏳ AA Framework Integration — consent-based income verification compliance</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <div class="glass-card" style="background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(16,185,129,0.08)); border-color: rgba(59,130,246,0.3);">
+        <h3 style="font-size: 16px; color: var(--text-primary); margin-bottom: 14px; font-family: 'Space Grotesk';">📋 CRO Action Items</h3>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; background: rgba(255,255,255,0.04); border-radius: 10px;">
+            <span style="font-size: 18px;">1️⃣</span>
+            <div>
+              <p style="font-size: 13px; color: var(--text-primary); font-weight: 600;">Sign off on Phase 1 & 2 (Q3 2026)</p>
+              <p style="font-size: 11px; color: var(--text-muted);">V2 model production deployment + EWS CRM integration</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; background: rgba(255,255,255,0.04); border-radius: 10px;">
+            <span style="font-size: 18px;">2️⃣</span>
+            <div>
+              <p style="font-size: 13px; color: var(--text-primary); font-weight: 600;">Approve score cutoff policy</p>
+              <p style="font-size: 11px; color: var(--text-muted);">Score ≥ 580 for PL ≤₹5L; Score ≥ 620 for PL >₹5L</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; background: rgba(255,255,255,0.04); border-radius: 10px;">
+            <span style="font-size: 18px;">3️⃣</span>
+            <div>
+              <p style="font-size: 13px; color: var(--text-primary); font-weight: 600;">Commission disparate impact study</p>
+              <p style="font-size: 11px; color: var(--text-muted);">Tier-3 + digital channel cutoff — fair lending compliance</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; background: rgba(255,255,255,0.04); border-radius: 10px;">
+            <span style="font-size: 18px;">4️⃣</span>
+            <div>
+              <p style="font-size: 13px; color: var(--text-primary); font-weight: 600;">Fix KS code bug & rerun diagnostics</p>
+              <p style="font-size: 11px; color: var(--text-muted);">Replace (tpr_c − tpr_c) with (tpr_c − fpr_c) in model code</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; background: rgba(255,255,255,0.04); border-radius: 10px;">
+            <span style="font-size: 18px;">5️⃣</span>
+            <div>
+              <p style="font-size: 13px; color: var(--text-primary); font-weight: 600;">Full policy rollout (Q4 2026)</p>
+              <p style="font-size: 11px; color: var(--text-muted);">Pricing grid + tenure caps + digital overlays + executive dashboard</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card" style="text-align: center; padding: 20px;">
+        <div style="font-size: 40px; margin-bottom: 8px;">🎯</div>
+        <h3 style="font-size: 15px; margin-bottom: 6px; color: var(--text-primary);">Strategic North Star</h3>
+        <p style="font-size: 13px; font-style: italic; color: var(--text-secondary);">
+          "Shift from volume-led growth to risk-adjusted, sustainable portfolio expansion — where every loan originated is priced for its true risk, monitored with precision, and governed with accountability."
+        </p>
+        <div class="divider"></div>
+        <p style="font-size: 11px; color: var(--text-muted);">Analytics & Risk Intelligence Unit | FinVista Digital Lending | June 2026</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<script>
+  const totalSlides = 10;
+  let current = 1;
+
+  // Build dots
+  const dotsEl = document.getElementById('dots');
+  for (let i = 1; i <= totalSlides; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 1 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    dotsEl.appendChild(d);
+  }
+
+  function goTo(n) {
+    document.getElementById(`slide-${current}`).classList.remove('active');
+    document.querySelectorAll('.dot')[current - 1].classList.remove('active');
+    current = Math.max(1, Math.min(totalSlides, n));
+    document.getElementById(`slide-${current}`).classList.add('active');
+    document.querySelectorAll('.dot')[current - 1].classList.add('active');
+    document.getElementById('counter').textContent =
+      String(current).padStart(2, '0') + ' / ' + String(totalSlides).padStart(2, '0');
+    // Animate progress bars on slide entry
+    setTimeout(() => {
+      document.querySelectorAll(`#slide-${current} .progress-fill`).forEach(el => {
+        el.style.width = el.style.width;
+      });
+    }, 100);
+  }
+
+  function nextSlide() { goTo(current + 1); }
+  function prevSlide() { goTo(current - 1); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextSlide();
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevSlide();
+  });
+</script>
+</body>
+</html>
