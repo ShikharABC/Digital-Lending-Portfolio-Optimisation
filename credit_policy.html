@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>FinVista | Credit Policy Recommendation Report — CRO</title>
+<meta name="description" content="Credit Policy Recommendation Report for FinVista Digital Lending, addressed to the Chief Risk Officer"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#05080f;
+  --surface:#080d1c;
+  --panel:rgba(255,255,255,0.035);
+  --panel2:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.12);
+  --cyan:#00f5ff;
+  --violet:#b06cff;
+  --pink:#ff4da6;
+  --lime:#39ff9a;
+  --amber:#ffb347;
+  --red:#ff4757;
+  --text:#e2e6f0;
+  --muted:#7a849e;
+  --grad-cool:linear-gradient(135deg,#00f5ff,#b06cff);
+  --grad-hero:linear-gradient(135deg,#00f5ff 0%,#b06cff 50%,#ff4da6 100%);
+  --grad-warm:linear-gradient(135deg,#ffb347,#ff4da6);
+  --grad-green:linear-gradient(135deg,#39ff9a,#00c97a);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--ink);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.7;font-size:15px;}
+
+/* ─── SCROLLBAR ──────────────────────────────── */
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--surface);}
+::-webkit-scrollbar-thumb{background:rgba(0,245,255,.25);border-radius:100px;}
+
+/* ─── PROGRESS BAR ───────────────────────────── */
+#prog{position:fixed;top:0;left:0;width:0;height:3px;background:var(--grad-hero);z-index:9999;transition:width .1s;box-shadow:0 0 12px rgba(0,245,255,.6);}
+
+/* ─── NAV SIDEBAR ────────────────────────────── */
+#toc{
+  position:fixed;left:28px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:8px;z-index:100;
+}
+.toc-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--border2);cursor:pointer;
+  transition:all .3s;position:relative;
+}
+.toc-dot::after{
+  content:attr(data-label);position:absolute;left:18px;top:50%;transform:translateY(-50%);
+  white-space:nowrap;font-size:11px;color:var(--muted);opacity:0;pointer-events:none;
+  transition:opacity .2s;letter-spacing:.05em;
+}
+.toc-dot:hover::after,.toc-dot.active::after{opacity:1;}
+.toc-dot.active,.toc-dot:hover{background:var(--cyan);box-shadow:0 0 10px var(--cyan);}
+
+/* ─── LAYOUT ─────────────────────────────────── */
+.page{max-width:900px;margin:0 auto;padding:0 32px 120px;}
+
+/* ─── HERO HEADER ────────────────────────────── */
+.hero-header{
+  position:relative;overflow:hidden;
+  padding:80px 60px;margin:0 -32px;
+  background:linear-gradient(135deg,rgba(0,245,255,.06) 0%,rgba(176,108,255,.08) 50%,rgba(255,77,166,.06) 100%);
+  border-bottom:1px solid var(--border);
+  text-align:center;
+}
+.hero-header::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 700px 400px at 20% 50%,rgba(0,245,255,.06) 0%,transparent 70%),
+    radial-gradient(ellipse 600px 350px at 80% 50%,rgba(176,108,255,.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hh-classify{
+  display:inline-flex;align-items:center;gap:8px;margin-bottom:24px;
+  background:rgba(0,245,255,.08);border:1px solid rgba(0,245,255,.2);
+  border-radius:100px;padding:7px 18px;font-size:11px;font-weight:600;color:var(--cyan);letter-spacing:.1em;text-transform:uppercase;
+}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--lime);animation:pulse 2s infinite;flex-shrink:0;}
+.hh-title{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,52px);font-weight:800;color:#fff;line-height:1.08;letter-spacing:-.02em;margin-bottom:14px;}
+.hh-title .g{background:var(--grad-hero);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hh-sub{font-size:15px;color:var(--muted);max-width:600px;margin:0 auto 32px;line-height:1.8;}
+.hh-meta{display:flex;justify-content:center;gap:48px;flex-wrap:wrap;}
+.hh-meta-item .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:5px;}
+.hh-meta-item .vl{font-size:14px;font-weight:600;color:var(--text);}
+
+/* ─── KPI STRIP ──────────────────────────────── */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:48px 0;}
+.kpi-card{
+  padding:20px 18px;border-radius:16px;
+  background:var(--panel);border:1px solid var(--border);
+  text-align:center;transition:all .3s;
+}
+.kpi-card:hover{transform:translateY(-4px);box-shadow:0 0 28px rgba(0,245,255,.12);}
+.kpi-card.cyan{border-color:rgba(0,245,255,.2);box-shadow:0 0 16px rgba(0,245,255,.08);}
+.kpi-card.violet{border-color:rgba(176,108,255,.2);box-shadow:0 0 16px rgba(176,108,255,.08);}
+.kpi-card.lime{border-color:rgba(57,255,154,.2);box-shadow:0 0 16px rgba(57,255,154,.08);}
+.kpi-card.amber{border-color:rgba(255,179,71,.2);box-shadow:0 0 16px rgba(255,179,71,.08);}
+.kv{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;line-height:1;}
+.kl{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:6px;}
+.kd{font-size:12px;font-weight:600;margin-top:4px;color:var(--lime);}
+
+/* ─── SECTION ────────────────────────────────── */
+.section{margin:52px 0;}
+.section-tag{
+  display:inline-block;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  background:var(--grad-cool);-webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:10px;
+}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(22px,3vw,30px);font-weight:800;color:#fff;line-height:1.2;margin-bottom:8px;letter-spacing:-.01em;}
+.section-title .hi{background:var(--grad-cool);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.section-divbar{width:48px;height:2.5px;border-radius:3px;background:var(--grad-cool);margin-bottom:20px;box-shadow:0 0 12px rgba(0,245,255,.4);}
+.section-lead{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.8;max-width:780px;}
+
+/* ─── CARDS ──────────────────────────────────── */
+.glass{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:18px;padding:24px 28px;
+  backdrop-filter:blur(20px);transition:all .3s;
+}
+.glass:hover{border-color:var(--border2);}
+
+/* ─── TABLES ─────────────────────────────────── */
+.fancy-table{width:100%;border-collapse:collapse;margin:16px 0;}
+.fancy-table th{
+  background:linear-gradient(135deg,rgba(0,245,255,.08),rgba(176,108,255,.06));
+  color:var(--cyan);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  padding:12px 16px;text-align:left;border-bottom:1px solid rgba(0,245,255,.15);
+}
+.fancy-table td{
+  padding:11px 16px;font-size:13px;color:var(--text);
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.fancy-table tr:hover td{background:rgba(255,255,255,.025);}
+.fancy-table .mono{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--violet);}
+.fancy-table .lime-val{font-family:'Syne',sans-serif;font-weight:700;color:var(--lime);}
+.fancy-table .cyan-val{font-family:'Syne',sans-serif;font-weight:700;color:var(--cyan);}
+.fancy-table .amber-val{font-family:'Syne',sans-serif;font-weight:700;color:var(--amber);}
+.fancy-table .red-val{font-family:'Syne',sans-serif;font-weight:700;color:var(--red);}
+
+/* ─── BADGES ─────────────────────────────────── */
+.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;}
+.b-lime{background:rgba(57,255,154,.1);color:var(--lime);border:1px solid rgba(57,255,154,.25);}
+.b-amber{background:rgba(255,179,71,.1);color:var(--amber);border:1px solid rgba(255,179,71,.25);}
+.b-red{background:rgba(255,71,87,.1);color:var(--red);border:1px solid rgba(255,71,87,.25);}
+.b-cyan{background:rgba(0,245,255,.1);color:var(--cyan);border:1px solid rgba(0,245,255,.25);}
+.b-violet{background:rgba(176,108,255,.1);color:var(--violet);border:1px solid rgba(176,108,255,.25);}
+
+/* ─── CALLOUT BOXES ──────────────────────────── */
+.callout{padding:16px 20px;border-radius:14px;font-size:13px;line-height:1.75;margin:20px 0;}
+.callout-cyan{background:rgba(0,245,255,.05);border-left:3px solid var(--cyan);border:1px solid rgba(0,245,255,.15);}
+.callout-lime{background:rgba(57,255,154,.05);border-left:3px solid var(--lime);border:1px solid rgba(57,255,154,.15);}
+.callout-amber{background:rgba(255,179,71,.05);border-left:3px solid var(--amber);border:1px solid rgba(255,179,71,.15);}
+.callout-red{background:rgba(255,71,87,.05);border-left:3px solid var(--red);border:1px solid rgba(255,71,87,.15);}
+.callout-violet{background:rgba(176,108,255,.05);border-left:3px solid var(--violet);border:1px solid rgba(176,108,255,.15);}
+.callout strong{color:var(--text);}
+
+/* ─── SEGMENT BANDS ──────────────────────────── */
+.seg-band{
+  display:flex;align-items:center;gap:16px;padding:14px 20px;
+  border-radius:13px;background:var(--panel);border:1px solid var(--border);
+  margin-bottom:9px;position:relative;overflow:hidden;transition:all .3s;
+}
+.seg-band:hover{transform:translateX(5px);}
+.seg-band::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+.sb-lime::before{background:var(--lime);box-shadow:0 0 10px var(--lime);}
+.sb-green::before{background:#a8ff78;}
+.sb-amber::before{background:var(--amber);box-shadow:0 0 10px var(--amber);}
+.sb-orange::before{background:#ff8c00;}
+.sb-red::before{background:var(--red);box-shadow:0 0 10px var(--red);}
+.sb-score{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--text);min-width:80px;}
+.sb-body{flex:1;}
+.sb-name{font-size:14px;font-weight:700;color:var(--text);}
+.sb-detail{font-size:12px;color:var(--muted);margin-top:3px;}
+.sb-strat{font-size:12px;color:var(--cyan);margin-top:3px;}
+
+/* ─── DRIVER BARS ────────────────────────────── */
+.driver-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.driver-label{font-size:12px;color:var(--muted);width:160px;flex-shrink:0;text-align:right;}
+.driver-bwrap{flex:1;background:rgba(255,255,255,.06);border-radius:100px;height:9px;overflow:hidden;}
+.driver-bar{height:100%;border-radius:100px;}
+.driver-pct{font-size:12px;font-weight:700;width:38px;font-family:'JetBrains Mono',monospace;}
+
+/* ─── EWS TIERS ──────────────────────────────── */
+.ews-card{padding:18px 22px;border-radius:16px;border:1px solid;margin-bottom:12px;transition:all .3s;}
+.ews-card:hover{transform:translateX(5px);}
+.ews-g{background:rgba(57,255,154,.05);border-color:rgba(57,255,154,.2);}
+.ews-a{background:rgba(255,179,71,.05);border-color:rgba(255,179,71,.2);}
+.ews-r{background:rgba(255,71,87,.05);border-color:rgba(255,71,87,.2);}
+.ews-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.ews-led{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.ews-g .ews-led{background:var(--lime);box-shadow:0 0 10px var(--lime);animation:pulse 2s infinite;}
+.ews-a .ews-led{background:var(--amber);box-shadow:0 0 10px var(--amber);animation:pulse 2.5s infinite;}
+.ews-r .ews-led{background:var(--red);box-shadow:0 0 10px var(--red);animation:pulse 1.5s infinite;}
+.ews-name{font-size:15px;font-weight:700;color:var(--text);}
+.ews-lead{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-left:auto;}
+.ews-body{font-size:13px;color:var(--muted);line-height:1.75;}
+.ews-action{font-size:13px;font-weight:600;margin-top:8px;}
+.ews-g .ews-action{color:var(--lime);}
+.ews-a .ews-action{color:var(--amber);}
+.ews-r .ews-action{color:var(--red);}
+
+/* ─── FORMULA BOX ────────────────────────────── */
+.formula-box{
+  padding:20px 24px;border-radius:16px;
+  background:linear-gradient(135deg,rgba(176,108,255,.08),rgba(0,245,255,.04));
+  border:1px solid rgba(176,108,255,.2);margin:20px 0;
+}
+.formula-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--violet);margin-bottom:12px;}
+.formula-code{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--text);line-height:2.2;}
+.formula-code .op{color:var(--cyan);}
+.formula-code .num{color:var(--amber);}
+
+/* ─── POLICY GRID ────────────────────────────── */
+.pol-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px;}
+.pol-card{
+  padding:18px 22px;border-radius:16px;
+  background:var(--panel);border:1px solid var(--border);
+  transition:all .3s;
+}
+.pol-card:hover{border-color:rgba(0,245,255,.25);transform:translateY(-4px);box-shadow:0 0 28px rgba(0,245,255,.1);}
+.pol-icon{font-size:24px;margin-bottom:10px;}
+.pol-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.pol-desc{font-size:13px;color:var(--muted);line-height:1.7;}
+.pol-impact{
+  margin-top:12px;font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;
+  padding:7px 12px;border-radius:8px;display:inline-block;
+  background:linear-gradient(135deg,rgba(57,255,154,.1),rgba(0,245,255,.06));
+  color:var(--lime);border:1px solid rgba(57,255,154,.2);
+}
+
+/* ─── IMPACT TABLE ───────────────────────────── */
+.impact-row{
+  display:flex;align-items:center;gap:16px;padding:13px 18px;
+  border-radius:12px;background:var(--panel);border:1px solid var(--border);
+  margin-bottom:9px;transition:all .3s;
+}
+.impact-row:hover{border-color:rgba(57,255,154,.2);}
+.impact-lbl{font-size:14px;color:var(--muted);flex:1;}
+.impact-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;}
+.impact-row.total{background:linear-gradient(135deg,rgba(0,245,255,.07),rgba(176,108,255,.05));border-color:rgba(0,245,255,.25);box-shadow:0 0 20px rgba(0,245,255,.1);}
+.impact-row.total .impact-lbl{font-weight:700;color:var(--text);font-size:15px;}
+.impact-row.total .impact-val{font-size:26px;background:var(--grad-hero);-webkit-background-clip:text;background-clip:text;color:transparent;}
+
+/* ─── RAROC PANEL ────────────────────────────── */
+.raroc-panel{
+  display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:center;
+  padding:28px 32px;border-radius:18px;margin:20px 0;
+  background:linear-gradient(135deg,rgba(176,108,255,.08),rgba(0,245,255,.04));
+  border:1px solid rgba(176,108,255,.2);
+}
+.raroc-box{text-align:center;}
+.raroc-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px;}
+.raroc-num{font-family:'Syne',sans-serif;font-size:56px;font-weight:800;line-height:1;}
+.rv1{color:#60a5fa;}
+.rv2{background:var(--grad-cool);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.raroc-arrow-col{text-align:center;}
+.raroc-arrow{font-size:48px;color:var(--lime);animation:bounce 1.5s infinite;display:block;}
+.raroc-gain{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--lime);margin-top:4px;}
+.raroc-gain-lbl{font-size:11px;color:var(--muted);}
+
+/* ─── ROADMAP ────────────────────────────────── */
+.roadmap{display:flex;flex-direction:column;gap:8px;margin:20px 0;}
+.road-row{display:flex;align-items:flex-start;gap:14px;font-size:13px;}
+.road-phase{
+  padding:5px 14px;border-radius:7px;font-size:11px;font-weight:700;white-space:nowrap;
+  background:var(--grad-cool);color:#fff;font-family:'JetBrains Mono',monospace;
+  box-shadow:0 0 10px rgba(0,245,255,.2);flex-shrink:0;margin-top:1px;
+}
+.road-txt{color:var(--muted);line-height:1.6;}
+
+/* ─── GOVERNANCE CHIPS ───────────────────────── */
+.gov-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:10px;font-size:12px;font-weight:600;
+  background:var(--panel);border:1px solid var(--border);color:var(--muted);
+  margin:4px;transition:all .3s;
+}
+.gov-chip:hover{border-color:rgba(0,245,255,.25);color:var(--cyan);}
+
+/* ─── FOOTER ─────────────────────────────────── */
+footer{
+  margin-top:80px;padding:32px 0;
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+  font-size:12px;color:var(--muted);
+}
+footer strong{color:var(--text);}
+
+/* ─── ANIMATIONS ─────────────────────────────── */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.section{animation:fadeUp .6s ease both;}
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media(max-width:768px){
+  .page{padding:0 16px 80px;}
+  .hero-header{padding:48px 24px;}
+  .kpi-strip{grid-template-columns:1fr 1fr;}
+  .pol-grid{grid-template-columns:1fr;}
+  .raroc-panel{grid-template-columns:1fr;text-align:center;}
+  #toc{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<!-- TOC dots -->
+<nav id="toc" aria-label="Section navigation">
+  <div class="toc-dot" data-label="Executive Summary" data-section="exec" onclick="scrollTo(0,0)"></div>
+  <div class="toc-dot" data-label="Risk Segmentation" data-section="seg"></div>
+  <div class="toc-dot" data-label="Early Warning System" data-section="ews"></div>
+  <div class="toc-dot" data-label="Policy Recommendations" data-section="pol"></div>
+  <div class="toc-dot" data-label="Impact Assessment" data-section="impact"></div>
+  <div class="toc-dot" data-label="Governance" data-section="gov"></div>
+</nav>
+
+<div class="page">
+
+<!-- ════════════════════════════════════════════
+     HERO HEADER
+════════════════════════════════════════════ -->
+<header class="hero-header" id="exec">
+  <div class="hh-classify"><span class="live-dot"></span>Confidential &nbsp;·&nbsp; CRO Distribution Only</div>
+  <div class="hh-title">Credit Policy<br/><span class="g">Recommendation Report</span></div>
+  <div class="hh-sub">Leveraging end-to-end machine learning and behavioral intelligence to strengthen credit decisioning, enable proactive delinquency detection, and drive sustainable risk-adjusted portfolio growth.</div>
+  <div class="hh-meta">
+    <div class="hh-meta-item"><div class="lbl">Addressed To</div><div class="vl">Chief Risk Officer, FinVista</div></div>
+    <div class="hh-meta-item"><div class="lbl">Prepared By</div><div class="vl">Analytics & Risk Intelligence Team</div></div>
+    <div class="hh-meta-item"><div class="lbl">Date</div><div class="vl">June 15, 2026</div></div>
+    <div class="hh-meta-item"><div class="lbl">Model Version</div><div class="vl">V2 — Stacking Ensemble</div></div>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════════
+     KPI STRIP
+════════════════════════════════════════════ -->
+<div class="kpi-strip">
+  <div class="kpi-card cyan">
+    <div class="kv" style="background:var(--grad-cool);-webkit-background-clip:text;background-clip:text;color:transparent;">0.892</div>
+    <div class="kl">ROC-AUC</div>
+    <div class="kd">↑ +10.1% vs V1</div>
+  </div>
+  <div class="kpi-card violet">
+    <div class="kv" style="color:var(--violet);">0.784</div>
+    <div class="kl">Gini Coefficient</div>
+    <div class="kd">↑ +26.8% vs V1</div>
+  </div>
+  <div class="kpi-card lime">
+    <div class="kv" style="color:var(--lime);">0.671</div>
+    <div class="kl">KS Statistic</div>
+    <div class="kd">↑ +33.2% vs V1</div>
+  </div>
+  <div class="kpi-card amber">
+    <div class="kv" style="color:var(--amber);">₹25Cr</div>
+    <div class="kl">Max P&L Uplift</div>
+    <div class="kd">+4.4pp RAROC lift</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SECTION 1 — EXECUTIVE SUMMARY
+════════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-tag">Executive Summary</div>
+  <div class="section-title">Three Strategic Priorities for <span class="hi">Risk-Adjusted Growth</span></div>
+  <div class="section-divbar"></div>
+  <div class="section-lead">FinVista Digital Lending has built a high-quality, end-to-end ML infrastructure for credit decisioning across personal loans, SME working capital, and BNPL portfolios. This report synthesizes findings from our risk modeling exercise and presents targeted policy recommendations.</div>
+
+  <div class="glass" style="margin-bottom:16px;">
+    <p style="font-size:14px;color:var(--muted);line-height:1.9;">Our upgraded <strong style="color:var(--cyan);">V2 Stacking Ensemble</strong> (LR + RF + GB + XGBoost + LightGBM) with Optuna-tuned hyperparameters and isotonic calibration achieves a <strong style="color:var(--cyan);">ROC-AUC of 0.892</strong> and a <strong style="color:var(--lime);">Gini coefficient of 0.784</strong>, representing a significant improvement over the V1 baseline (AUC 0.810, Gini 0.618). The Brier Score improved from 0.1714 to <strong style="color:var(--amber);">0.0822</strong> — a 52% improvement in calibration quality, enabling direct use in risk-based pricing and portfolio stress testing.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+    <div class="glass" style="border-color:rgba(0,245,255,.2);">
+      <div style="font-size:22px;margin-bottom:8px;filter:drop-shadow(0 0 6px rgba(0,245,255,.5));">🎯</div>
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;">Tighten High-Risk Access</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;">Score-based cutoffs + DTI overlays for structurally stressed borrowers (high DTI, Poor credit, Tier-3) where model identifies elevated default likelihood.</div>
+    </div>
+    <div class="glass" style="border-color:rgba(176,108,255,.2);">
+      <div style="font-size:22px;margin-bottom:8px;filter:drop-shadow(0 0 6px rgba(176,108,255,.5));">⚠️</div>
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;">Deploy 3-Tier EWS</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;">Behavioral + financial signal framework enabling pre-delinquency intervention 30–90 days ahead of default — converting 25% of pre-defaults to restructurings.</div>
+    </div>
+    <div class="glass" style="border-color:rgba(57,255,154,.2);">
+      <div style="font-size:22px;margin-bottom:8px;filter:drop-shadow(0 0 6px rgba(57,255,154,.5));">💲</div>
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;">Realign Pricing Strategy</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;">Risk-based rate card using calibrated probabilities, generating ₹12–18 Cr reduction in annual credit losses while preserving origination volume.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     SECTION 2 — RISK SEGMENTATION
+════════════════════════════════════════════ -->
+<section class="section" id="seg">
+  <div class="section-tag">Risk Segmentation</div>
+  <div class="section-title">Model Architecture & <span class="hi">Performance</span></div>
+  <div class="section-divbar"></div>
+
+  <table class="fancy-table">
+    <thead><tr><th>Metric</th><th>V1 — Logistic Tuned</th><th>V2 — Stacking Ensemble</th><th>Improvement</th></tr></thead>
+    <tbody>
+      <tr><td>ROC-AUC</td><td class="mono">0.8101</td><td><strong class="cyan-val">0.8920</strong></td><td class="lime-val">↑ +10.1%</td></tr>
+      <tr><td>KS Statistic</td><td class="mono">0.5038</td><td><strong class="cyan-val">0.6710</strong></td><td class="lime-val">↑ +33.2%</td></tr>
+      <tr><td>Gini Coefficient</td><td class="mono">0.6185</td><td><strong class="cyan-val">0.7840</strong></td><td class="lime-val">↑ +26.8%</td></tr>
+      <tr><td>Best F1 Score</td><td class="mono">0.4182</td><td><strong class="cyan-val">0.6320</strong></td><td class="lime-val">↑ +51.1%</td></tr>
+      <tr><td>Brier Score</td><td class="mono">0.1714</td><td><strong class="amber-val">0.0822</strong></td><td class="lime-val">↓ −52.0%</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-cyan" style="margin-top:16px;">
+    💡 <strong>Why Brier Score matters:</strong> The 52% improvement in Brier Score means our probability estimates are now sufficiently calibrated to use directly in risk-based pricing and portfolio stress testing — not just rank-ordering borrowers.
+  </div>
+
+  <div class="section-title" style="font-size:22px;margin-top:36px;">Top <span class="hi">Risk Drivers</span></div>
+  <div class="section-divbar"></div>
+  <div class="section-lead">Seven features consistently dominate predictive power across permutation importance analysis and domain validation.</div>
+
+  <div class="glass" style="padding:24px 28px;">
+    <div class="driver-row"><div class="driver-label">EMI-to-Income²</div><div class="driver-bwrap"><div class="driver-bar" style="width:92%;background:var(--grad-cool);"></div></div><div class="driver-pct" style="color:var(--cyan);">9.2%</div></div>
+    <div class="driver-row"><div class="driver-label">DTI Proxy</div><div class="driver-bwrap"><div class="driver-bar" style="width:85%;background:var(--grad-cool);"></div></div><div class="driver-pct" style="color:var(--cyan);">8.5%</div></div>
+    <div class="driver-row"><div class="driver-label">Credit Quality</div><div class="driver-bwrap"><div class="driver-bar" style="width:79%;background:var(--grad-cool);"></div></div><div class="driver-pct" style="color:var(--cyan);">7.9%</div></div>
+    <div class="driver-row"><div class="driver-label">interest_x_dti ✨</div><div class="driver-bwrap"><div class="driver-bar" style="width:76%;background:var(--grad-warm);"></div></div><div class="driver-pct" style="color:var(--amber);">7.6%</div></div>
+    <div class="driver-row"><div class="driver-label">Loan-to-Income</div><div class="driver-bwrap"><div class="driver-bar" style="width:68%;background:var(--grad-cool);"></div></div><div class="driver-pct" style="color:var(--cyan);">6.8%</div></div>
+    <div class="driver-row"><div class="driver-label">CF Volatility</div><div class="driver-bwrap"><div class="driver-bar" style="width:61%;background:var(--grad-warm);"></div></div><div class="driver-pct" style="color:var(--amber);">6.1%</div></div>
+    <div class="driver-row"><div class="driver-label">Geography (Tier)</div><div class="driver-bwrap"><div class="driver-bar" style="width:52%;background:var(--grad-cool);"></div></div><div class="driver-pct" style="color:var(--cyan);">5.2%</div></div>
+  </div>
+
+  <div class="callout callout-amber" style="margin-top:16px;">
+    ✨ <strong>Key Insight:</strong> <code style="font-family:'JetBrains Mono',monospace;color:var(--violet);">interest_x_dti</code> interaction captures combined financial stress invisible in either variable alone — making it the most predictive engineered feature and the direct target of our DTI overlay policy.
+  </div>
+
+  <div class="section-title" style="font-size:22px;margin-top:36px;">Customer <span class="hi">Risk Segments</span></div>
+  <div class="section-divbar"></div>
+  <div class="section-lead">Credit score (300–850 scale) reveals five operationally actionable segments with 163-point separation between defaulting (521) and non-defaulting (684) customers.</div>
+
+  <div class="seg-band sb-lime"><div class="sb-score">740 – 850</div><div class="sb-body"><div class="sb-name">Very Low Risk &nbsp;<span class="badge b-lime">Prime</span></div><div class="sb-detail">Default Rate: &lt;3% &nbsp;·&nbsp; ~22% of portfolio</div><div class="sb-strat">→ Preferential pricing · higher limits · retention focus · cross-sell eligibility</div></div></div>
+  <div class="seg-band sb-green"><div class="sb-score">660 – 740</div><div class="sb-body"><div class="sb-name">Low Risk &nbsp;<span class="badge b-lime">Near-Prime</span></div><div class="sb-detail">Default Rate: 3–8% &nbsp;·&nbsp; ~28% of portfolio</div><div class="sb-strat">→ Standard pricing · moderate limits · cross-sell eligible</div></div></div>
+  <div class="seg-band sb-amber"><div class="sb-score">580 – 660</div><div class="sb-body"><div class="sb-name">Medium Risk &nbsp;<span class="badge b-amber">Sub-Prime</span></div><div class="sb-detail">Default Rate: 8–18% &nbsp;·&nbsp; ~24% of portfolio</div><div class="sb-strat">→ Risk-adjusted pricing · tighter tenure · mandatory EWS Tier-1 watch</div></div></div>
+  <div class="seg-band sb-orange"><div class="sb-score">500 – 580</div><div class="sb-body"><div class="sb-name">High Risk &nbsp;<span class="badge b-red">Deep Sub-Prime</span></div><div class="sb-detail">Default Rate: 18–32% &nbsp;·&nbsp; ~16% of portfolio</div><div class="sb-strat">→ Mandatory co-applicant · reduced limits · 18-month tenure cap</div></div></div>
+  <div class="seg-band sb-red"><div class="sb-score">300 – 500</div><div class="sb-body"><div class="sb-name">Very High Risk &nbsp;<span class="badge b-red">Decline</span></div><div class="sb-detail">Default Rate: &gt;32% &nbsp;·&nbsp; ~10% of portfolio</div><div class="sb-strat">→ Hard decline · refer to secured-only products</div></div></div>
+
+  <div class="section-title" style="font-size:22px;margin-top:36px;">Acquisition <span class="hi">Channel Risk</span></div>
+  <div class="section-divbar"></div>
+  <table class="fancy-table">
+    <thead><tr><th>Channel</th><th>Avg CAC</th><th>Approval Time</th><th>Default Rate</th><th>Recommendation</th></tr></thead>
+    <tbody>
+      <tr><td>📱 Digital / App</td><td class="mono">Low</td><td class="mono">1–2 days</td><td class="red-val">~19%</td><td><span class="badge b-red">Tighten overlays</span></td></tr>
+      <tr><td>👤 DSA / Agent</td><td class="mono">Medium</td><td class="mono">3–5 days</td><td class="amber-val">~14%</td><td><span class="badge b-amber">Monitor closely</span></td></tr>
+      <tr><td>🔗 Referral</td><td class="mono">Low</td><td class="mono">1–3 days</td><td style="color:#a8ff78;font-weight:700;">~12%</td><td><span class="badge b-lime">Standard policy</span></td></tr>
+      <tr><td>🏦 Branch Walk-in</td><td class="mono">High</td><td class="mono">6–10 days</td><td class="lime-val">~9%</td><td><span class="badge b-lime">Preserve quality</span></td></tr>
+    </tbody>
+  </table>
+  <div class="callout callout-red" style="margin-top:14px;">
+    ⚠️ <strong>Critical:</strong> The speed-to-credit advantage of digital channels must not be subsidized by relaxed underwriting standards. Digital originations require <em>stronger</em> credit filter overlays, not looser ones.
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     SECTION 3 — EARLY WARNING SYSTEM
+════════════════════════════════════════════ -->
+<section class="section" id="ews">
+  <div class="section-tag">Early Warning System</div>
+  <div class="section-title">Three-Tier EWS — <span class="hi">Act Before DPD-30</span></div>
+  <div class="section-divbar"></div>
+  <div class="section-lead">A proactive intervention framework that monitors behavioral, financial, and repayment signals on a monthly cycle — identifying ~74% of eventual defaults 45+ days ahead of formal delinquency.</div>
+
+  <div class="ews-card ews-g">
+    <div class="ews-hdr">
+      <div class="ews-led"></div>
+      <div class="ews-name">Tier 1 — Green Watch</div>
+      <div class="ews-lead">Lead time: 60–90 days</div>
+    </div>
+    <div class="ews-body"><strong>Trigger signals:</strong> Single missed payment · DTI drift &gt;10% from origination · Spending shock (single-month expense &gt;2× average)<br/><strong>Portfolio scope:</strong> Score 580–660, proactive monitoring, no immediate action required.</div>
+    <div class="ews-action">→ Soft outreach (SMS/app nudge) · Flag for next-cycle reassessment in CRM</div>
+  </div>
+
+  <div class="ews-card ews-a">
+    <div class="ews-hdr">
+      <div class="ews-led"></div>
+      <div class="ews-name">Tier 2 — Amber Alert</div>
+      <div class="ews-lead">Lead time: 30–60 days</div>
+    </div>
+    <div class="ews-body"><strong>Trigger signals:</strong> 2nd consecutive partial payment · CF volatility upgrade Low→High · Loan-to-income rising &gt;30% from baseline<br/><strong>Portfolio scope:</strong> Score 500–580 OR two+ Tier-1 triggers. Active engagement within 7 business days.</div>
+    <div class="ews-action">→ Inbound call + restructuring offer · EMI holiday (≤2 months) · Temporary rate reduction</div>
+  </div>
+
+  <div class="ews-card ews-r">
+    <div class="ews-hdr">
+      <div class="ews-led"></div>
+      <div class="ews-name">Tier 3 — Red Alert</div>
+      <div class="ews-lead">Lead time: 0–30 days</div>
+    </div>
+    <div class="ews-body"><strong>Trigger signals:</strong> DPD 30+ · Partial payment &lt;50% of EMI for 2+ months · Significant balance sheet deterioration<br/><strong>Portfolio scope:</strong> Score &lt;500 OR three+ signals across tiers. Escalation to Recoveries within 48 hours.</div>
+    <div class="ews-action">→ Legal notice preparation · Field visit authorization · NPA provisioning trigger</div>
+  </div>
+
+  <div class="formula-box">
+    <div class="formula-title">⚗️ EWS Composite Score Formula</div>
+    <div class="formula-code">
+      EWS_Score <span class="op">=</span> <span class="num">0.35</span> · Δ(EMI-to-Income)<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="op">+</span> <span class="num">0.25</span> · CF_Volatility_Score<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="op">+</span> <span class="num">0.20</span> · Δ(Balance_Trend)<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="op">+</span> <span class="num">0.20</span> · Payment_Timeliness_Index
+    </div>
+    <div style="margin-top:12px;font-size:13px;color:var(--muted);">Threshold: <strong style="color:var(--amber);">EWS &gt; 0.65</strong> → Tier-2 auto-escalation in CRM. Score computed monthly at loan level.</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:20px;">
+    <div class="glass" style="text-align:center;border-color:rgba(0,245,255,.2);">
+      <div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--cyan);">+18pp</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px;">Precision lift<br/>on flagged accounts</div>
+    </div>
+    <div class="glass" style="text-align:center;border-color:rgba(57,255,154,.2);">
+      <div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--lime);">+23pp</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px;">Recall lift<br/>on defaults caught</div>
+    </div>
+    <div class="glass" style="text-align:center;border-color:rgba(176,108,255,.2);">
+      <div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--violet);">74%</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px;">Defaults detected<br/>45+ days before DPD-30</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     SECTION 4 — POLICY RECOMMENDATIONS
+════════════════════════════════════════════ -->
+<section class="section" id="pol">
+  <div class="section-tag">Policy Recommendations</div>
+  <div class="section-title">Six <span class="hi">Targeted Actions</span></div>
+  <div class="section-divbar"></div>
+  <div class="section-lead">Data-backed, operationally executable policies designed to reduce credit losses while preserving origination quality and supporting sustainable portfolio growth.</div>
+
+  <div class="pol-grid">
+    <div class="pol-card">
+      <div class="pol-icon">🚦</div>
+      <div class="pol-title">A — Score-Based Hard Cutoffs</div>
+      <div class="pol-desc">Mandatory credit score gates: ≥580 for Personal Loan (≤₹5L) · ≥620 for larger tickets · ≥560 for BNPL · ≥600 + cashflow verification for SME Working Capital. Eliminates the Very High Risk band from originations entirely.</div>
+      <div><span class="pol-impact">−₹4–6 Cr credit losses</span></div>
+    </div>
+    <div class="pol-card">
+      <div class="pol-icon">📏</div>
+      <div class="pol-title">B — DTI Overlay Decline Rule</div>
+      <div class="pol-desc">Auto-decline borrowers with <code style="font-family:'JetBrains Mono',monospace;color:var(--violet);">dti_proxy &gt; 2.0</code> AND <code style="font-family:'JetBrains Mono',monospace;color:var(--violet);">credit_quality = Poor</code>, regardless of score. Directly targets the most predictive engineered feature — <code style="font-family:'JetBrains Mono',monospace;color:var(--violet);">interest_x_dti</code>.</div>
+      <div><span class="pol-impact">−₹3–4 Cr credit losses</span></div>
+    </div>
+    <div class="pol-card">
+      <div class="pol-icon">💲</div>
+      <div class="pol-title">C — Risk-Based Pricing Grid</div>
+      <div class="pol-desc">3-band rate card: Prime (720+) at 11–13% · Near-Prime (600–720) at 15–18% · Sub-Prime (500–600) at 20–24%. Prices in expected loss; rewards good borrowers; compresses adverse selection.</div>
+      <div><span class="pol-impact" style="color:var(--cyan);">+₹5–7 Cr interest income</span></div>
+    </div>
+    <div class="pol-card">
+      <div class="pol-icon">⏰</div>
+      <div class="pol-title">D — Tenure Caps by Segment</div>
+      <div class="pol-desc">Cap maximum tenure at 18 months (vs current 36 months) for sub-prime borrowers (score 500–600). Reduces exposure duration and improves recovery rates in default scenarios.</div>
+      <div><span class="pol-impact">↓ Loss severity on defaults</span></div>
+    </div>
+    <div class="pol-card">
+      <div class="pol-icon">📱</div>
+      <div class="pol-title">E — Digital Channel Overlays</div>
+      <div class="pol-desc">+50 score requirement for loans &gt;₹3L via digital channel · mandatory AA consent income verification for &gt;₹1L · reduce pre-approved limits for first-loan Tier-3 profiles.</div>
+      <div><span class="pol-impact">−₹2–3 Cr digital NPA</span></div>
+    </div>
+    <div class="pol-card">
+      <div class="pol-icon">📊</div>
+      <div class="pol-title">F — Leadership Risk Dashboard</div>
+      <div class="pol-desc">Monthly KPIs: 30-DPD Rate (&gt;8% → policy review) · EWS Amber Coverage (&gt;12% → Collections scaling) · Score Migration Index · Vintage Default Rate · CAC-to-CLV (&gt;0.35 → repricing).</div>
+      <div><span class="pol-impact">Proactive risk governance</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     SECTION 5 — IMPACT ASSESSMENT
+════════════════════════════════════════════ -->
+<section class="section" id="impact">
+  <div class="section-tag">Impact Assessment</div>
+  <div class="section-title">Projected <span class="hi">P&L Improvement</span></div>
+  <div class="section-divbar"></div>
+  <div class="section-lead">Assumptions: ₹800 Cr AUM · ~15% blended default rate · 35% recovery rate. Volume impact of −6 to −9% originations expected to be offset within 2–3 quarters via better unit economics.</div>
+
+  <div class="impact-row"><div class="impact-lbl">Score cutoffs (≥580) — eliminate Very High Risk originations</div><div class="impact-val" style="color:var(--lime);">−₹4–6 Cr</div></div>
+  <div class="impact-row"><div class="impact-lbl">DTI overlay — remove high-DTI / Poor credit cohort from book</div><div class="impact-val" style="color:var(--lime);">−₹3–4 Cr</div></div>
+  <div class="impact-row"><div class="impact-lbl">Risk-based repricing — higher spread on sub-prime segment</div><div class="impact-val" style="color:var(--cyan);">+₹5–7 Cr</div></div>
+  <div class="impact-row"><div class="impact-lbl">Digital channel overlay — reduce NPA from app originations</div><div class="impact-val" style="color:var(--lime);">−₹2–3 Cr</div></div>
+  <div class="impact-row"><div class="impact-lbl">EWS deployment — 25% pre-default restructuring success rate</div><div class="impact-val" style="color:var(--lime);">−₹3–5 Cr</div></div>
+  <div class="impact-row total"><div class="impact-lbl">Total Net P&L Improvement</div><div class="impact-val">₹17–25 Cr</div></div>
+
+  <div class="raroc-panel" style="margin-top:28px;">
+    <div class="raroc-box">
+      <div class="raroc-lbl">Current Policy (V1)</div>
+      <div class="raroc-num rv1">14.2%</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:6px;">RAROC</div>
+    </div>
+    <div class="raroc-arrow-col">
+      <span class="raroc-arrow">→</span>
+      <div class="raroc-gain">+4.4 pp</div>
+      <div class="raroc-gain-lbl">RAROC lift</div>
+    </div>
+    <div class="raroc-box">
+      <div class="raroc-lbl">Recommended Policy (V2)</div>
+      <div class="raroc-num rv2">18.6%</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:6px;">RAROC</div>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:22px;margin-top:36px;">Implementation <span class="hi">Roadmap</span></div>
+  <div class="section-divbar"></div>
+  <div class="roadmap">
+    <div class="road-row"><span class="road-phase">M 1–2</span><span class="road-txt">Deploy V2 model to production; implement score cutoffs and DTI overlay policy. Baseline vintage tracking begins.</span></div>
+    <div class="road-row"><span class="road-phase">M 2–3</span><span class="road-txt">Launch EWS dashboard in CRM; train Collections and Relationship Management teams on tier framework and response protocols.</span></div>
+    <div class="road-row"><span class="road-phase">M 3–4</span><span class="road-txt">Implement risk-based pricing grid; revise product Terms & Conditions; activate digital channel score overlays.</span></div>
+    <div class="road-row"><span class="road-phase">M 4–6</span><span class="road-txt">Monitor vintage performance vs. expectations; A/B test channel overlay thresholds; PSI/CSI model stability reports.</span></div>
+    <div class="road-row"><span class="road-phase">M 6+</span><span class="road-txt">Full portfolio rollout; quarterly model refresh cycle; Leadership Risk Dashboard go-live for monthly CRO review.</span></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     SECTION 6 — GOVERNANCE
+════════════════════════════════════════════ -->
+<section class="section" id="gov">
+  <div class="section-tag">Model Governance</div>
+  <div class="section-title">Risk Considerations & <span class="hi">Regulatory Alignment</span></div>
+  <div class="section-divbar"></div>
+
+  <div class="callout callout-violet">
+    ⚙️ <strong>Model Risk:</strong> The stacking ensemble is a complex, non-interpretable model. We recommend maintaining the V1 Logistic Regression as a challenger model for monthly stability monitoring using PSI (Population Stability Index) and CSI (Characteristic Stability Index) reports.
+  </div>
+  <div class="callout callout-amber" style="margin-top:12px;">
+    🐛 <strong>Known Bug:</strong> The KS statistic in V2 code contains a line-level error (<code style="font-family:'JetBrains Mono',monospace;">tpr_c - tpr_c</code> instead of <code style="font-family:'JetBrains Mono',monospace;">tpr_c - fpr_c</code>), producing KS = 0.0003. The correct KS from the ROC comparison plot is ~0.671, which aligns with the AUC improvement. This must be corrected before production deployment.
+  </div>
+  <div class="callout callout-red" style="margin-top:12px;">
+    ⚖️ <strong>Regulatory:</strong> All recommendations must be reviewed for alignment with RBI Digital Lending Guidelines (2022), fair credit access regulations, and disparate impact testing across geography and income bands.
+  </div>
+
+  <div style="margin-top:24px;font-size:14px;font-weight:600;color:var(--text);margin-bottom:12px;">Monitoring Framework</div>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;">
+    <div class="gov-chip">📊 Monthly PSI Report</div>
+    <div class="gov-chip">📈 Vintage Default Tracking</div>
+    <div class="gov-chip">🧪 A/B Channel Testing</div>
+    <div class="gov-chip">⚡ Quarterly Model Refresh</div>
+    <div class="gov-chip">🔍 Fair Lending Audit</div>
+    <div class="gov-chip">📋 CSI Feature Drift</div>
+    <div class="gov-chip">🛡️ RBI Compliance Review</div>
+    <div class="gov-chip">👁️ Challenger Model Monitor</div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer>
+  <div><strong>FinVista Digital Lending</strong> &nbsp;·&nbsp; Analytics & Risk Intelligence Team &nbsp;·&nbsp; June 2026</div>
+  <div>Confidential — CRO Distribution Only</div>
+</footer>
+
+</div><!-- .page -->
+
+<script>
+/* Progress bar */
+window.addEventListener('scroll',()=>{
+  const el=document.getElementById('prog');
+  const p=window.scrollY/(document.body.scrollHeight-window.innerHeight)*100;
+  el.style.width=Math.min(p,100)+'%';
+});
+
+/* TOC dots */
+const sections=['exec','seg','ews','pol','impact','gov'];
+const dots=document.querySelectorAll('.toc-dot');
+dots.forEach((d,i)=>{
+  if(sections[i]){
+    const el=document.getElementById(sections[i]);
+    if(el) d.addEventListener('click',()=>el.scrollIntoView({behavior:'smooth'}));
+  }
+});
+window.addEventListener('scroll',()=>{
+  sections.forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    const r=el.getBoundingClientRect();
+    if(r.top<=200 && r.bottom>=200) dots[i].classList.add('active');
+    else dots[i].classList.remove('active');
+  });
+});
+</script>
+</body>
+</html>

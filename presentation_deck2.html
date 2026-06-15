@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>FinVista | Credit Risk Intelligence Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#05080f;
+  --surface:#0a0f1e;
+  --glass:rgba(255,255,255,0.04);
+  --glass2:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.12);
+  --cyan:#00f5ff;
+  --violet:#b06cff;
+  --pink:#ff4da6;
+  --lime:#39ff9a;
+  --amber:#ffb347;
+  --red:#ff4757;
+  --text:#e8eaf0;
+  --muted:#7a849e;
+  --grad-hero:linear-gradient(135deg,#00f5ff 0%,#b06cff 50%,#ff4da6 100%);
+  --grad-cool:linear-gradient(135deg,#00f5ff,#b06cff);
+  --grad-warm:linear-gradient(135deg,#ffb347,#ff4da6);
+  --grad-green:linear-gradient(135deg,#39ff9a,#00c97a);
+  --grad-red:linear-gradient(135deg,#ff4757,#c0392b);
+  --shadow-cyan:0 0 40px rgba(0,245,255,0.18);
+  --shadow-violet:0 0 40px rgba(176,108,255,0.18);
+}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;background:var(--ink);}
+
+/* ─── CANVAS bg ─────────────────────────────── */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+/* ─── DECK ──────────────────────────────────── */
+#deck{position:relative;z-index:1;width:100vw;height:100vh;overflow:hidden;}
+
+/* ─── SLIDES ────────────────────────────────── */
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  padding:52px 72px 100px;
+  opacity:0;pointer-events:none;
+  transform:translateY(32px) scale(0.98);
+  transition:opacity .6s cubic-bezier(.4,0,.2,1),transform .6s cubic-bezier(.4,0,.2,1);
+  background:transparent;
+}
+.slide.active{opacity:1;pointer-events:all;transform:translateY(0) scale(1);}
+.slide.out{opacity:0;transform:translateY(-28px) scale(0.98);}
+
+/* surface cards */
+.glass-card{
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:20px;
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  transition:border-color .3s,box-shadow .3s,transform .3s;
+}
+.glass-card:hover{border-color:var(--border2);box-shadow:var(--shadow-cyan);transform:translateY(-4px);}
+
+/* ─── TYPOGRAPHY ─────────────────────────────── */
+.eyebrow{
+  font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;
+  color:transparent;background:var(--grad-cool);
+  -webkit-background-clip:text;background-clip:text;
+  margin-bottom:18px;display:inline-block;
+}
+.hero-title{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(30px,4vw,56px);font-weight:800;
+  color:#fff;line-height:1.08;letter-spacing:-.02em;margin-bottom:10px;
+}
+.hero-title .hi{
+  background:var(--grad-hero);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.sub{font-size:clamp(13px,1.5vw,16px);color:var(--muted);line-height:1.75;max-width:720px;margin-bottom:28px;}
+.divbar{
+  width:56px;height:3px;border-radius:4px;
+  background:var(--grad-cool);margin-bottom:28px;
+  box-shadow:0 0 14px rgba(0,245,255,.5);
+}
+
+/* ─── BADGES ─────────────────────────────────── */
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:4px 12px;border-radius:100px;}
+.badge-cyan  {background:rgba(0,245,255,.1); color:var(--cyan);  border:1px solid rgba(0,245,255,.25);}
+.badge-violet{background:rgba(176,108,255,.1);color:var(--violet);border:1px solid rgba(176,108,255,.25);}
+.badge-lime  {background:rgba(57,255,154,.1); color:var(--lime);  border:1px solid rgba(57,255,154,.25);}
+.badge-amber {background:rgba(255,179,71,.1); color:var(--amber); border:1px solid rgba(255,179,71,.25);}
+.badge-red   {background:rgba(255,71,87,.1);  color:var(--red);   border:1px solid rgba(255,71,87,.25);}
+.badge-pink  {background:rgba(255,77,166,.1); color:var(--pink);  border:1px solid rgba(255,77,166,.25);}
+
+/* ─── GRID LAYOUTS ───────────────────────────── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+
+/* ─── BIG METRIC ─────────────────────────────── */
+.big-num{
+  font-family:'Syne',sans-serif;font-size:clamp(32px,3.5vw,50px);font-weight:800;
+  background:var(--grad-cool);-webkit-background-clip:text;background-clip:text;color:transparent;
+  line-height:1;
+}
+.big-label{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-top:6px;}
+.big-delta{font-size:13px;font-weight:600;color:var(--lime);margin-top:4px;}
+
+/* ─── NAV ────────────────────────────────────── */
+#nav{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:14px;
+  background:rgba(10,15,30,.8);border:1px solid var(--border2);
+  backdrop-filter:blur(24px);padding:10px 22px;border-radius:100px;
+  z-index:9999;box-shadow:0 8px 40px rgba(0,0,0,.5);
+}
+.nbtn{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--glass2);border:1px solid var(--border);
+  color:var(--muted);cursor:pointer;font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .25s;
+}
+.nbtn:hover{background:rgba(0,245,255,.15);border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 16px rgba(0,245,255,.25);}
+#ctr{font-size:12px;color:var(--muted);min-width:52px;text-align:center;font-family:'JetBrains Mono',monospace;}
+.dots{display:flex;gap:5px;align-items:center;}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--muted);cursor:pointer;transition:all .25s;}
+.dot.on{width:22px;background:var(--cyan);border-radius:3px;box-shadow:0 0 8px var(--cyan);}
+
+/* ─── PROGRESS LINE ──────────────────────────── */
+#prog-line{
+  position:fixed;top:0;left:0;height:2px;
+  background:var(--grad-hero);z-index:9999;
+  transition:width .5s ease;box-shadow:0 0 12px rgba(0,245,255,.6);
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE 1 — HERO
+══════════════════════════════════════════ */
+#s1{justify-content:center;}
+.hero-wrap{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center;width:100%;}
+.hero-left{}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(0,245,255,.08);border:1px solid rgba(0,245,255,.2);
+  border-radius:100px;padding:7px 18px;margin-bottom:28px;
+  font-size:12px;font-weight:600;color:var(--cyan);
+}
+.hero-tag .dot-live{width:7px;height:7px;border-radius:50%;background:var(--lime);animation:pulse 2s infinite;flex-shrink:0;}
+.s1-title{font-family:'Syne',sans-serif;font-size:clamp(36px,5vw,68px);font-weight:800;color:#fff;line-height:1.04;letter-spacing:-.03em;margin-bottom:20px;}
+.s1-title .g1{background:var(--grad-cool);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.s1-title .g2t{background:var(--grad-warm);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.s1-sub{font-size:15px;color:var(--muted);max-width:560px;line-height:1.8;margin-bottom:36px;}
+.s1-meta-row{display:flex;gap:32px;flex-wrap:wrap;}
+.s1-meta-item .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:5px;}
+.s1-meta-item .vl{font-size:14px;font-weight:600;color:var(--text);}
+.hero-right{flex-shrink:0;}
+.ring-wrap{position:relative;width:300px;height:300px;}
+.ring-svg{width:100%;height:100%;animation:spin-slow 20s linear infinite;}
+.ring-center{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(circle,rgba(0,245,255,.12) 0%,transparent 70%);
+  border-radius:50%;
+}
+.ring-center .rc-num{font-family:'Syne',sans-serif;font-size:52px;font-weight:800;background:var(--grad-cool);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.ring-center .rc-lbl{font-size:12px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
+.ring-chips{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;justify-content:center;}
+
+/* ═══════════════════════════════════════════
+   SLIDE 2 — AGENDA
+══════════════════════════════════════════ */
+.agenda-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;}
+.ag-item{
+  display:flex;gap:16px;align-items:flex-start;
+  padding:18px 22px;border-radius:16px;
+  background:var(--glass);border:1px solid var(--border);
+  transition:all .3s;cursor:default;
+}
+.ag-item:hover{background:var(--glass2);border-color:rgba(0,245,255,.25);transform:translateX(6px);box-shadow:var(--shadow-cyan);}
+.ag-num{
+  width:38px;height:38px;border-radius:12px;flex-shrink:0;
+  background:var(--grad-cool);display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;
+  box-shadow:0 0 16px rgba(0,245,255,.35);
+}
+.ag-body{}
+.ag-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.ag-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* ═══════════════════════════════════════════
+   SLIDE 3 — CONTEXT
+══════════════════════════════════════════ */
+.ctx-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;flex:1;}
+.challenge-stack{display:flex;flex-direction:column;gap:11px;}
+.ch-card{
+  display:flex;gap:14px;align-items:flex-start;
+  padding:14px 18px;border-radius:14px;
+  background:var(--glass);border:1px solid var(--border);
+}
+.ch-icon{font-size:20px;flex-shrink:0;margin-top:2px;filter:drop-shadow(0 0 6px rgba(0,245,255,.4));}
+.ch-text h4{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.ch-text p{font-size:12px;color:var(--muted);line-height:1.6;}
+.psq-stack{display:flex;flex-direction:column;gap:12px;}
+.pq-card{
+  padding:16px 20px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(0,245,255,.06),rgba(176,108,255,.06));
+  border:1px solid rgba(0,245,255,.14);
+}
+.pq-card h4{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin-bottom:10px;}
+.pq-card p{font-size:12px;color:var(--muted);line-height:1.7;}
+
+/* ═══════════════════════════════════════════
+   SLIDE 4 — DATA ARCH
+══════════════════════════════════════════ */
+.da-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;flex:1;align-content:start;}
+.da-card{padding:18px 20px;border-radius:16px;background:var(--glass);border:1px solid var(--border);transition:all .3s;}
+.da-card:hover{border-color:rgba(176,108,255,.35);box-shadow:var(--shadow-violet);}
+.da-icon{font-size:26px;margin-bottom:10px;filter:drop-shadow(0 0 8px rgba(176,108,255,.5));}
+.da-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.da-chips{display:flex;flex-wrap:wrap;gap:5px;}
+.da-chip{font-size:10px;padding:3px 9px;border-radius:6px;background:rgba(176,108,255,.1);color:#c4a3ff;border:1px solid rgba(176,108,255,.18);}
+.da-rel{font-size:11px;color:var(--amber);margin-top:9px;font-style:italic;}
+.da-footer{
+  grid-column:1/-1;border-radius:14px;padding:14px 20px;
+  background:linear-gradient(135deg,rgba(57,255,154,.06),rgba(0,245,255,.04));
+  border:1px solid rgba(57,255,154,.15);font-size:12px;color:var(--muted);line-height:1.7;
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE 5 — MODEL PERF
+══════════════════════════════════════════ */
+.perf-layout{display:grid;grid-template-columns:1fr 1.3fr;gap:24px;flex:1;}
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-content:start;}
+.mc{padding:18px 20px;border-radius:16px;background:var(--glass);border:1px solid var(--border);transition:all .3s;}
+.mc:hover{transform:scale(1.03);}
+.mc.cyan-glow{border-color:rgba(0,245,255,.25);box-shadow:0 0 24px rgba(0,245,255,.12);}
+.mc.violet-glow{border-color:rgba(176,108,255,.25);box-shadow:0 0 24px rgba(176,108,255,.12);}
+.mc.lime-glow{border-color:rgba(57,255,154,.25);box-shadow:0 0 24px rgba(57,255,154,.12);}
+.mc.amber-glow{border-color:rgba(255,179,71,.25);box-shadow:0 0 24px rgba(255,179,71,.12);}
+.mc .mv{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;line-height:1;}
+.mc .ml{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:5px;}
+.mc .md{font-size:12px;font-weight:600;margin-top:6px;}
+.compare-panel{padding:20px;border-radius:16px;background:var(--glass);border:1px solid var(--border);margin-top:12px;}
+.cp-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:14px;text-transform:uppercase;letter-spacing:.08em;}
+.cp-row{margin-bottom:12px;}
+.cp-rowlabel{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.cp-bars{display:flex;flex-direction:column;gap:4px;}
+.cp-barrow{display:flex;align-items:center;gap:8px;}
+.cp-ver{font-size:10px;color:var(--muted);width:18px;text-align:right;font-family:'JetBrains Mono',monospace;}
+.cp-bwrap{flex:1;background:rgba(255,255,255,.06);border-radius:100px;height:9px;overflow:hidden;}
+.cp-bar{height:100%;border-radius:100px;}
+.cp-val{font-size:10px;width:34px;font-family:'JetBrains Mono',monospace;font-weight:600;}
+.perf-right{display:flex;flex-direction:column;gap:16px;}
+.chart-frame{border-radius:14px;overflow:hidden;border:1px solid var(--border);flex:1;position:relative;}
+.chart-frame img{width:100%;height:100%;object-fit:cover;display:block;}
+.chart-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(10,15,30,.6) 0%,transparent 40%);
+  pointer-events:none;
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE 6 — RISK SEGMENTATION
+══════════════════════════════════════════ */
+.seg-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;flex:1;}
+.seg-stack{display:flex;flex-direction:column;gap:9px;}
+.seg-row{
+  display:flex;align-items:center;gap:16px;padding:13px 18px;
+  border-radius:13px;background:var(--glass);border:1px solid var(--border);
+  position:relative;overflow:hidden;transition:all .3s;cursor:default;
+}
+.seg-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;}
+.seg-row:hover{transform:translateX(5px);}
+.seg-row.vl::before{background:var(--lime);box-shadow:0 0 10px var(--lime);}
+.seg-row.lo::before{background:#a8ff78;box-shadow:0 0 10px #a8ff78;}
+.seg-row.me::before{background:var(--amber);box-shadow:0 0 10px var(--amber);}
+.seg-row.hi::before{background:#ff8c00;box-shadow:0 0 10px #ff8c00;}
+.seg-row.vh::before{background:var(--red);box-shadow:0 0 10px var(--red);}
+.sr-score{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--text);min-width:75px;}
+.sr-body{flex:1;}
+.sr-name{font-size:13px;font-weight:600;color:var(--text);}
+.sr-detail{font-size:11px;color:var(--muted);margin-top:3px;}
+.sr-strat{font-size:11px;color:var(--cyan);margin-top:3px;}
+.driver-panel{padding:20px;border-radius:16px;background:var(--glass);border:1px solid var(--border);display:flex;flex-direction:column;gap:14px;}
+.dp-title{font-size:12px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px;}
+.dr-row{display:flex;align-items:center;gap:10px;}
+.dr-name{font-size:11px;color:var(--muted);width:130px;flex-shrink:0;text-align:right;}
+.dr-bwrap{flex:1;background:rgba(255,255,255,.06);border-radius:100px;height:8px;overflow:hidden;}
+.dr-bar{height:100%;border-radius:100px;}
+.dr-pct{font-size:11px;font-weight:700;width:34px;font-family:'JetBrains Mono',monospace;}
+.insight-pill{
+  padding:12px 16px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(255,179,71,.08),rgba(255,77,166,.06));
+  border:1px solid rgba(255,179,71,.2);font-size:12px;color:var(--muted);line-height:1.6;
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE 7 — EWS
+══════════════════════════════════════════ */
+.ews-layout{display:grid;grid-template-columns:.95fr 1.05fr;gap:22px;flex:1;}
+.ews-tiers{display:flex;flex-direction:column;gap:12px;}
+.ews-tier{padding:16px 20px;border-radius:16px;border:1px solid;position:relative;overflow:hidden;transition:all .3s;}
+.ews-tier:hover{transform:translateX(4px);}
+.ews-tier.green{background:linear-gradient(135deg,rgba(57,255,154,.06),rgba(0,201,122,.04));border-color:rgba(57,255,154,.2);}
+.ews-tier.amber{background:linear-gradient(135deg,rgba(255,179,71,.07),rgba(255,140,0,.04));border-color:rgba(255,179,71,.2);}
+.ews-tier.red  {background:linear-gradient(135deg,rgba(255,71,87,.07),rgba(192,57,43,.04));border-color:rgba(255,71,87,.2);}
+.ews-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.ews-led{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.ews-tier.green .ews-led{background:var(--lime);box-shadow:0 0 10px var(--lime);animation:pulse 2s infinite;}
+.ews-tier.amber .ews-led{background:var(--amber);box-shadow:0 0 10px var(--amber);animation:pulse 2.5s infinite;}
+.ews-tier.red   .ews-led{background:var(--red);  box-shadow:0 0 10px var(--red);  animation:pulse 1.5s infinite;}
+.ews-name{font-size:14px;font-weight:700;color:var(--text);}
+.ews-time{font-size:11px;color:var(--muted);margin-left:auto;font-family:'JetBrains Mono',monospace;}
+.ews-body{font-size:12px;color:var(--muted);line-height:1.7;}
+.ews-body strong{color:var(--text);}
+.ews-action{font-size:12px;font-weight:700;margin-top:8px;}
+.ews-tier.green .ews-action{color:var(--lime);}
+.ews-tier.amber .ews-action{color:var(--amber);}
+.ews-tier.red   .ews-action{color:var(--red);}
+.ews-right{display:flex;flex-direction:column;gap:14px;}
+.formula-box{
+  padding:18px 20px;border-radius:16px;
+  background:linear-gradient(135deg,rgba(176,108,255,.08),rgba(0,245,255,.05));
+  border:1px solid rgba(176,108,255,.2);
+}
+.formula-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--violet);margin-bottom:10px;}
+.formula-code{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);line-height:1.9;}
+.formula-code .op{color:var(--cyan);}
+.formula-code .num{color:var(--amber);}
+.lift-panel{padding:18px 20px;border-radius:16px;background:var(--glass);border:1px solid var(--border);}
+.lift-title{font-size:12px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;}
+.lift-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.lift-lbl{font-size:11px;color:var(--muted);width:130px;flex-shrink:0;}
+.lift-bwrap{flex:1;background:rgba(255,255,255,.06);border-radius:100px;height:10px;overflow:hidden;}
+.lift-bar{height:100%;border-radius:100px;}
+.lift-val{font-size:12px;font-weight:700;width:40px;text-align:right;font-family:'JetBrains Mono',monospace;}
+.detection-highlight{
+  padding:14px 18px;border-radius:13px;
+  background:linear-gradient(135deg,rgba(57,255,154,.1),rgba(0,245,255,.06));
+  border:1px solid rgba(57,255,154,.2);
+  display:flex;align-items:center;gap:14px;
+}
+.dh-num{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--lime);}
+.dh-text{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* ═══════════════════════════════════════════
+   SLIDE 8 — POLICY RECS
+══════════════════════════════════════════ */
+.pol-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;flex:1;align-content:start;}
+.pol-card{
+  padding:18px 20px;border-radius:16px;
+  background:var(--glass);border:1px solid var(--border);
+  display:flex;flex-direction:column;gap:10px;transition:all .35s;
+}
+.pol-card:hover{transform:translateY(-5px);border-color:rgba(0,245,255,.25);box-shadow:var(--shadow-cyan);}
+.pol-icon{font-size:26px;filter:drop-shadow(0 0 8px rgba(0,245,255,.5));}
+.pol-title{font-size:13px;font-weight:700;color:var(--text);}
+.pol-body{font-size:12px;color:var(--muted);line-height:1.65;flex:1;}
+.pol-impact{
+  font-size:12px;font-weight:700;padding:7px 12px;border-radius:8px;text-align:center;
+  background:linear-gradient(135deg,rgba(57,255,154,.12),rgba(0,245,255,.08));
+  color:var(--lime);border:1px solid rgba(57,255,154,.2);
+  font-family:'JetBrains Mono',monospace;
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE 9 — IMPACT
+══════════════════════════════════════════ */
+.impact-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;flex:1;}
+.impact-rows{display:flex;flex-direction:column;gap:10px;}
+.ir{
+  display:flex;align-items:center;gap:14px;
+  padding:13px 18px;border-radius:13px;
+  background:var(--glass);border:1px solid var(--border);transition:all .3s;
+}
+.ir:hover{border-color:rgba(57,255,154,.2);}
+.ir-lbl{font-size:13px;color:var(--muted);flex:1;}
+.ir-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;}
+.ir.positive .ir-val{color:var(--lime);}
+.ir.income  .ir-val{color:var(--cyan);}
+.ir.total{
+  border-color:rgba(0,245,255,.3);
+  background:linear-gradient(135deg,rgba(0,245,255,.07),rgba(176,108,255,.05));
+  box-shadow:var(--shadow-cyan);
+}
+.ir.total .ir-lbl{font-weight:700;color:var(--text);}
+.ir.total .ir-val{font-size:24px;background:var(--grad-hero);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.roadmap{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.road-row{display:flex;align-items:center;gap:12px;font-size:12px;}
+.road-ph{
+  padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap;
+  background:var(--grad-cool);color:#fff;font-family:'JetBrains Mono',monospace;
+  box-shadow:0 0 10px rgba(0,245,255,.25);
+}
+.road-txt{color:var(--muted);}
+.raroc-panel{
+  padding:24px;border-radius:18px;
+  background:linear-gradient(135deg,rgba(176,108,255,.08),rgba(0,245,255,.05));
+  border:1px solid rgba(176,108,255,.2);
+  display:flex;flex-direction:column;gap:16px;justify-content:center;
+}
+.raroc-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--violet);margin-bottom:4px;}
+.raroc-formula{font-size:11px;color:var(--muted);margin-bottom:4px;font-family:'JetBrains Mono',monospace;}
+.raroc-row{display:flex;justify-content:space-between;align-items:center;}
+.raroc-lbl{font-size:13px;color:var(--muted);}
+.raroc-vl{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;}
+.rv1{color:#60a5fa;}
+.rv2{background:var(--grad-cool);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.raroc-arrow{font-size:28px;text-align:center;color:var(--lime);animation:bounce 1.5s infinite;}
+.raroc-highlight{
+  padding:14px;border-radius:12px;text-align:center;
+  background:linear-gradient(135deg,rgba(57,255,154,.12),rgba(0,245,255,.06));
+  border:1px solid rgba(57,255,154,.2);
+}
+.rh-num{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--lime);}
+.rh-lbl{font-size:12px;color:var(--muted);margin-top:4px;}
+
+/* ═══════════════════════════════════════════
+   SLIDE 10 — CTA
+══════════════════════════════════════════ */
+#s10{justify-content:center;align-items:center;text-align:center;}
+.cta-tag{display:inline-block;margin-bottom:24px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.2em;color:var(--cyan);background:rgba(0,245,255,.08);border:1px solid rgba(0,245,255,.2);padding:7px 18px;border-radius:100px;}
+.cta-title{font-family:'Syne',sans-serif;font-size:clamp(32px,5vw,62px);font-weight:800;color:#fff;line-height:1.1;max-width:800px;margin:0 auto 18px;letter-spacing:-.02em;}
+.cta-title .hi{background:var(--grad-hero);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.cta-sub{font-size:15px;color:var(--muted);max-width:540px;margin:0 auto 36px;line-height:1.8;}
+.cta-kpis{display:flex;justify-content:center;gap:48px;margin-bottom:40px;}
+.cta-kpi .kv{font-family:'Syne',sans-serif;font-size:44px;font-weight:800;background:var(--grad-hero);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1;}
+.cta-kpi .kl{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:6px;}
+.cta-btn{
+  display:inline-block;padding:15px 44px;border-radius:100px;
+  background:var(--grad-hero);color:#fff;font-size:15px;font-weight:700;
+  border:none;cursor:pointer;letter-spacing:.03em;position:relative;overflow:hidden;
+  box-shadow:0 0 50px rgba(0,245,255,.3),0 0 30px rgba(176,108,255,.2);
+  transition:transform .25s,box-shadow .25s;font-family:'DM Sans',sans-serif;
+}
+.cta-btn:hover{transform:scale(1.06);box-shadow:0 0 70px rgba(0,245,255,.5),0 0 40px rgba(176,108,255,.35);}
+.cta-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);pointer-events:none;}
+.cta-foot{margin-top:36px;font-size:11px;color:var(--muted);letter-spacing:.05em;}
+
+/* ─── KEYFRAMES ──────────────────────────────── */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes spin-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes countUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.slide.active .big-num,.slide.active .mv,.slide.active .rc-num{animation:countUp .7s ease both;}
+
+/* ─── SCROLLBAR (hidden) ─────────────────────── */
+::-webkit-scrollbar{display:none;}
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media(max-width:960px){
+  .slide{padding:28px 28px 90px;}
+  .hero-right,.s1-deco{display:none;}
+  .ctx-grid,.perf-layout,.seg-layout,.ews-layout,.impact-layout{grid-template-columns:1fr;}
+  .pol-grid,.da-grid{grid-template-columns:1fr 1fr;}
+  .agenda-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- Particle Canvas -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- Progress line -->
+<div id="prog-line" style="width:10%;"></div>
+
+<div id="deck">
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 1 — HERO
+════════════════════════════════════════════════════════════ -->
+<section class="slide active" id="s1">
+  <div class="hero-wrap">
+    <div class="hero-left">
+      <div class="hero-tag"><span class="dot-live"></span>Live Analytics Report &nbsp;|&nbsp; Confidential</div>
+      <div class="s1-title">Credit Risk<br/><span class="g1">Intelligence</span><br/><span class="g2t">Deck</span></div>
+      <div class="s1-sub">End-to-end machine learning framework to strengthen credit decisioning, detect delinquency early, and drive sustainable risk-adjusted portfolio growth across FinVista's lending book.</div>
+      <div class="s1-meta-row">
+        <div class="s1-meta-item"><div class="lbl">Prepared For</div><div class="vl">Chief Risk Officer</div></div>
+        <div class="s1-meta-item"><div class="lbl">Date</div><div class="vl">June 15, 2026</div></div>
+        <div class="s1-meta-item"><div class="lbl">Model Version</div><div class="vl">V2 — Stacking Ensemble</div></div>
+        <div class="s1-meta-item"><div class="lbl">Classification</div><div class="vl">🔒 Confidential</div></div>
+      </div>
+      <div style="margin-top:28px;display:flex;gap:10px;flex-wrap:wrap;">
+        <span class="badge badge-cyan">ROC-AUC 0.892</span>
+        <span class="badge badge-lime">Gini 0.784</span>
+        <span class="badge badge-violet">KS 0.671</span>
+        <span class="badge badge-amber">Brier 0.0822</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="ring-wrap">
+        <svg class="ring-svg" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="rg1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#00f5ff"/>
+              <stop offset="50%" stop-color="#b06cff"/>
+              <stop offset="100%" stop-color="#ff4da6"/>
+            </linearGradient>
+          </defs>
+          <circle cx="150" cy="150" r="135" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <circle cx="150" cy="150" r="110" stroke="rgba(0,245,255,0.08)" stroke-width="1" stroke-dasharray="6 10"/>
+          <circle cx="150" cy="150" r="135" stroke="url(#rg1)" stroke-width="2.5"
+            stroke-dasharray="600 848" stroke-dashoffset="0" stroke-linecap="round"/>
+          <!-- Dots on ring -->
+          <circle cx="150" cy="15" r="5" fill="#00f5ff" opacity=".9"/>
+          <circle cx="272" cy="220" r="5" fill="#b06cff" opacity=".9"/>
+          <circle cx="28" cy="220" r="5" fill="#ff4da6" opacity=".9"/>
+          <circle cx="283" cy="82" r="3.5" fill="#39ff9a" opacity=".7"/>
+          <circle cx="17" cy="82" r="3.5" fill="#ffb347" opacity=".7"/>
+        </svg>
+        <div class="ring-center">
+          <div class="rc-num">0.892</div>
+          <div class="rc-lbl">ROC · AUC</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 2 — AGENDA
+════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <div class="eyebrow">Session Outline</div>
+  <div class="hero-title">What We're Covering <span class="hi">Today</span></div>
+  <div class="sub">A strategic walkthrough — from context through model intelligence to boardroom-ready policy actions.</div>
+  <div class="agenda-grid">
+    <div class="ag-item">
+      <div class="ag-num">01</div>
+      <div class="ag-body">
+        <div class="ag-title">Industry Context & Problem Statement</div>
+        <div class="ag-desc">Growth dynamics, key business friction points, and the central analytical challenge driving this engagement.</div>
+      </div>
+      <span class="badge badge-cyan">5 min</span>
+    </div>
+    <div class="ag-item">
+      <div class="ag-num">02</div>
+      <div class="ag-body">
+        <div class="ag-title">Data Architecture & Feature Design</div>
+        <div class="ag-desc">7 data domains, 40+ engineered features, interaction terms, and strict anti-leakage design principles.</div>
+      </div>
+      <span class="badge badge-violet">5 min</span>
+    </div>
+    <div class="ag-item">
+      <div class="ag-num">03</div>
+      <div class="ag-body">
+        <div class="ag-title">V2 Model Performance Breakdown</div>
+        <div class="ag-desc">AUC 0.892, Gini 0.784, KS 0.671 — a 10% lift over the V1 baseline with 52% better calibration.</div>
+      </div>
+      <span class="badge badge-lime">7 min</span>
+    </div>
+    <div class="ag-item">
+      <div class="ag-num">04</div>
+      <div class="ag-body">
+        <div class="ag-title">Risk Segmentation & Top Predictors</div>
+        <div class="ag-desc">5 actionable risk bands, 163-point score separation, key feature importances, channel risk differentials.</div>
+      </div>
+      <span class="badge badge-amber">7 min</span>
+    </div>
+    <div class="ag-item">
+      <div class="ag-num">05</div>
+      <div class="ag-body">
+        <div class="ag-title">Early Warning System Framework</div>
+        <div class="ag-desc">3-tier EWS detecting 74% of defaults 45+ days ahead. Composite scoring formula with behavioral signals.</div>
+      </div>
+      <span class="badge badge-pink">6 min</span>
+    </div>
+    <div class="ag-item">
+      <div class="ag-num">06</div>
+      <div class="ag-body">
+        <div class="ag-title">Policy Recommendations & Impact</div>
+        <div class="ag-desc">6 targeted policy actions delivering ₹17–25 Cr P&L uplift and +4.4pp RAROC improvement.</div>
+      </div>
+      <span class="badge badge-red">10 min</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 3 — INDUSTRY CONTEXT
+════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s3">
+  <div class="eyebrow">Business Context</div>
+  <div class="hero-title">The Digital Lending <span class="hi">Dilemma</span></div>
+  <div class="sub">Scale and speed enabled rapid growth — but evolving borrower behavior and rising acquisition costs demand a smarter risk approach.</div>
+  <div class="ctx-grid">
+    <div class="challenge-stack">
+      <div class="ch-card">
+        <div class="ch-icon">⚡</div>
+        <div class="ch-text">
+          <h4>Speed vs. Portfolio Quality Trade-off</h4>
+          <p>Digital channels deliver 1–2 day approvals but carry ~19% default rates — 2× that of branch originations. Faster growth may be loading hidden systemic risk into the book.</p>
+        </div>
+      </div>
+      <div class="ch-card">
+        <div class="ch-icon">🔍</div>
+        <div class="ch-text">
+          <h4>Siloed Data, Blind Risk Spots</h4>
+          <p>Repayment, behavioral, and origination signals live in separate systems. Risk drivers are identified reactively at DPD-30 — not 60 days earlier when intervention is still effective.</p>
+        </div>
+      </div>
+      <div class="ch-card">
+        <div class="ch-icon">💲</div>
+        <div class="ch-text">
+          <h4>Flat Pricing Subsidizes Risk</h4>
+          <p>Uniform rate cards under-price weak credits and over-price strong ones. DTI stress and income instability remain unpriced, compressing net interest margins on the riskiest cohorts.</p>
+        </div>
+      </div>
+      <div class="ch-card">
+        <div class="ch-icon">📊</div>
+        <div class="ch-text">
+          <h4>Leadership Visibility Gap</h4>
+          <p>No forward-looking portfolio health view exists for senior leadership. Delinquency is surfaced only after it happens — not 45–90 days earlier via behavioral and financial signals.</p>
+        </div>
+      </div>
+    </div>
+    <div class="psq-stack">
+      <div class="pq-card">
+        <h4>🎯 Central Problem Statement</h4>
+        <p>How can FinVista leverage end-to-end customer and transaction data to strengthen credit risk assessment, enable early detection of delinquencies, optimize pricing and product strategies, and drive sustainable, risk-adjusted portfolio growth?</p>
+      </div>
+      <div class="pq-card">
+        <h4>❓ Key Questions to Answer</h4>
+        <p>① Which customer segments show materially different risk behaviors?<br/>② How do acquisition channels affect portfolio quality & unit economics?<br/>③ Which products deliver the strongest risk-adjusted returns?<br/>④ How should pricing & tenure be tailored by segment?<br/>⑤ What should leadership monitor proactively?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 4 — DATA ARCHITECTURE
+════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s4">
+  <div class="eyebrow">Data Design</div>
+  <div class="hero-title">7 Domains · 40+ Features · <span class="hi">Zero Leakage</span></div>
+  <div class="sub">A synthetic dataset capturing the full customer lifecycle — from origination to behavioral signals to loan outcome.</div>
+  <div class="da-grid">
+    <div class="da-card">
+      <div class="da-icon">👤</div>
+      <div class="da-title">Customer Profile</div>
+      <div class="da-chips"><span class="da-chip">Geography</span><span class="da-chip">Income Proxy</span><span class="da-chip">Employment</span><span class="da-chip">Credit Quality</span></div>
+      <div class="da-rel">⚠ Weaker profiles → higher default</div>
+    </div>
+    <div class="da-card">
+      <div class="da-icon">💳</div>
+      <div class="da-title">Loan & Product</div>
+      <div class="da-chips"><span class="da-chip">Product Type</span><span class="da-chip">Loan Size</span><span class="da-chip">Tenure</span><span class="da-chip">Pricing</span><span class="da-chip">Risk Grade</span></div>
+      <div class="da-rel">⚠ Higher risk → tighter terms</div>
+    </div>
+    <div class="da-card">
+      <div class="da-icon">💰</div>
+      <div class="da-title">Repayment Behavior</div>
+      <div class="da-chips"><span class="da-chip">Timeliness</span><span class="da-chip">DPD Status</span><span class="da-chip">Partial Payments</span></div>
+      <div class="da-rel">⚠ Deterioration precedes default</div>
+    </div>
+    <div class="da-card">
+      <div class="da-icon">📡</div>
+      <div class="da-title">Behavioral Signals</div>
+      <div class="da-chips"><span class="da-chip">CF Consistency</span><span class="da-chip">Bal. Volatility</span><span class="da-chip">Spending Shocks</span></div>
+      <div class="da-rel">⚠ High volatility → 2.1× delinquency</div>
+    </div>
+    <div class="da-card">
+      <div class="da-icon">📣</div>
+      <div class="da-title">Acquisition</div>
+      <div class="da-chips"><span class="da-chip">Channel</span><span class="da-chip">CAC</span><span class="da-chip">Approval Time</span></div>
+      <div class="da-rel">⚠ Digital: 19% default vs 9% branch</div>
+    </div>
+    <div class="da-card">
+      <div class="da-icon">📅</div>
+      <div class="da-title">Time & Outcomes</div>
+      <div class="da-chips"><span class="da-chip">Cohort Month</span><span class="da-chip">Origination</span><span class="da-chip">Default Flag</span><span class="da-chip">CLV Proxy</span></div>
+      <div class="da-rel">⚠ Newer cohorts may differ</div>
+    </div>
+    <div class="da-footer">
+      🔧 <strong style="color:var(--cyan);">Key Engineered Features:</strong>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;">emi_to_income² · interest_x_dti · loan_to_annual_income · tenure_rate_ratio · cac_per_income</span>
+      &nbsp;|&nbsp; Anti-leakage exclusions: <span style="font-family:'JetBrains Mono',monospace;font-size:11px;">repayment_rate · total_repaid · loan_status · delinquency_status</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 5 — MODEL PERFORMANCE
+════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s5">
+  <div class="eyebrow">Model Performance</div>
+  <div class="hero-title">V2 Stacking Ensemble — <span class="hi">A Step Change</span></div>
+  <div class="sub">LR + RF + GB + XGBoost + LightGBM stacked with Optuna tuning (60 trials each), conservative SMOTE (30%), and isotonic calibration.</div>
+  <div class="perf-layout">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="metric-grid">
+        <div class="mc cyan-glow">
+          <div class="mv" style="background:var(--grad-cool);-webkit-background-clip:text;background-clip:text;color:transparent;">0.892</div>
+          <div class="ml">ROC-AUC</div>
+          <div class="md" style="color:var(--lime);">↑ +10.1% vs V1</div>
+        </div>
+        <div class="mc lime-glow">
+          <div class="mv" style="color:var(--lime);">0.784</div>
+          <div class="ml">Gini Coefficient</div>
+          <div class="md" style="color:var(--lime);">↑ +26.8% vs V1</div>
+        </div>
+        <div class="mc violet-glow">
+          <div class="mv" style="color:var(--violet);">0.671</div>
+          <div class="ml">KS Statistic</div>
+          <div class="md" style="color:var(--lime);">↑ +33.2% vs V1</div>
+        </div>
+        <div class="mc amber-glow">
+          <div class="mv" style="color:var(--amber);">0.0822</div>
+          <div class="ml">Brier Score</div>
+          <div class="md" style="color:var(--lime);">↓ −52.0% vs V1</div>
+        </div>
+      </div>
+      <div class="compare-panel">
+        <div class="cp-title">V1 vs V2 — Side-by-Side</div>
+        <div class="cp-row">
+          <div class="cp-rowlabel">ROC-AUC</div>
+          <div class="cp-bars">
+            <div class="cp-barrow"><div class="cp-ver">V1</div><div class="cp-bwrap"><div class="cp-bar" style="width:81%;background:rgba(96,165,250,.6);"></div></div><div class="cp-val" style="color:var(--muted);">0.810</div></div>
+            <div class="cp-barrow"><div class="cp-ver">V2</div><div class="cp-bwrap"><div class="cp-bar" style="width:89.2%;background:var(--grad-cool);"></div></div><div class="cp-val" style="color:var(--cyan);">0.892</div></div>
+          </div>
+        </div>
+        <div class="cp-row">
+          <div class="cp-rowlabel">Gini Coefficient</div>
+          <div class="cp-bars">
+            <div class="cp-barrow"><div class="cp-ver">V1</div><div class="cp-bwrap"><div class="cp-bar" style="width:61.85%;background:rgba(96,165,250,.6);"></div></div><div class="cp-val" style="color:var(--muted);">0.619</div></div>
+            <div class="cp-barrow"><div class="cp-ver">V2</div><div class="cp-bwrap"><div class="cp-bar" style="width:78.4%;background:var(--grad-cool);"></div></div><div class="cp-val" style="color:var(--cyan);">0.784</div></div>
+          </div>
+        </div>
+        <div class="cp-row">
+          <div class="cp-rowlabel">Best F1 Score</div>
+          <div class="cp-bars">
+            <div class="cp-barrow"><div class="cp-ver">V1</div><div class="cp-bwrap"><div class="cp-bar" style="width:41.82%;background:rgba(96,165,250,.6);"></div></div><div class="cp-val" style="color:var(--muted);">0.418</div></div>
+            <div class="cp-barrow"><div class="cp-ver">V2</div><div class="cp-bwrap"><div class="cp-bar" style="width:63.2%;background:var(--grad-cool);"></div></div><div class="cp-val" style="color:var(--cyan);">0.632</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="perf-right">
+      <div class="chart-frame" style="flex:1;">
+        <img src="roc_comparison.png" alt="ROC Comparison"/>
+        <div class="chart-overlay"></div>
+      </div>
+      <div class="chart-frame" style="height:160px;">
+        <img src="calibration.png" alt="Calibration Curve"/>
+        <div class="chart-overlay"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 6 — RISK SEGMENTATION
+════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s6">
+  <div class="eyebrow">Risk Segmentation</div>
+  <div class="hero-title">Five Distinct <span class="hi">Risk Bands</span></div>
+  <div class="sub">Credit score (300–850) reveals operationally actionable segments with a 163-point default/non-default score separation.</div>
+  <div class="seg-layout">
+    <div class="seg-stack">
+      <div class="seg-row vl">
+        <div class="sr-score">740 – 850</div>
+        <div class="sr-body">
+          <div class="sr-name">Very Low Risk &nbsp;<span class="badge badge-lime" style="font-size:10px;">Prime</span></div>
+          <div class="sr-detail">Default Rate: &lt;3% &nbsp;|&nbsp; ~22% of portfolio</div>
+          <div class="sr-strat">→ Preferential pricing · higher limits · retention focus</div>
+        </div>
+      </div>
+      <div class="seg-row lo">
+        <div class="sr-score">660 – 740</div>
+        <div class="sr-body">
+          <div class="sr-name">Low Risk &nbsp;<span class="badge badge-lime" style="font-size:10px;">Near-Prime</span></div>
+          <div class="sr-detail">Default Rate: 3–8% &nbsp;|&nbsp; ~28% of portfolio</div>
+          <div class="sr-strat">→ Standard pricing · cross-sell eligible</div>
+        </div>
+      </div>
+      <div class="seg-row me">
+        <div class="sr-score">580 – 660</div>
+        <div class="sr-body">
+          <div class="sr-name">Medium Risk &nbsp;<span class="badge badge-amber" style="font-size:10px;">Sub-Prime</span></div>
+          <div class="sr-detail">Default Rate: 8–18% &nbsp;|&nbsp; ~24% of portfolio</div>
+          <div class="sr-strat">→ Risk-adjusted pricing · tighter tenure · EWS watch</div>
+        </div>
+      </div>
+      <div class="seg-row hi">
+        <div class="sr-score">500 – 580</div>
+        <div class="sr-body">
+          <div class="sr-name">High Risk &nbsp;<span class="badge badge-red" style="font-size:10px;">Deep Sub-Prime</span></div>
+          <div class="sr-detail">Default Rate: 18–32% &nbsp;|&nbsp; ~16% of portfolio</div>
+          <div class="sr-strat">→ Mandatory co-applicant · 18-month tenure cap</div>
+        </div>
+      </div>
+      <div class="seg-row vh">
+        <div class="sr-score">300 – 500</div>
+        <div class="sr-body">
+          <div class="sr-name">Very High Risk &nbsp;<span class="badge badge-red" style="font-size:10px;">Decline</span></div>
+          <div class="sr-detail">Default Rate: &gt;32% &nbsp;|&nbsp; ~10% of portfolio</div>
+          <div class="sr-strat">→ Hard decline · refer to secured products only</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="driver-panel">
+        <div class="dp-title">Top Risk Drivers</div>
+        <div class="dr-row"><div class="dr-name">EMI-to-Income²</div><div class="dr-bwrap"><div class="dr-bar" style="width:92%;background:var(--grad-cool);"></div></div><div class="dr-pct" style="color:var(--cyan);">9.2%</div></div>
+        <div class="dr-row"><div class="dr-name">DTI Proxy</div><div class="dr-bwrap"><div class="dr-bar" style="width:85%;background:var(--grad-cool);"></div></div><div class="dr-pct" style="color:var(--cyan);">8.5%</div></div>
+        <div class="dr-row"><div class="dr-name">Credit Quality</div><div class="dr-bwrap"><div class="dr-bar" style="width:79%;background:var(--grad-cool);"></div></div><div class="dr-pct" style="color:var(--cyan);">7.9%</div></div>
+        <div class="dr-row"><div class="dr-name">interest_x_dti ✨</div><div class="dr-bwrap"><div class="dr-bar" style="width:76%;background:var(--grad-warm);"></div></div><div class="dr-pct" style="color:var(--amber);">7.6%</div></div>
+        <div class="dr-row"><div class="dr-name">Loan-to-Income</div><div class="dr-bwrap"><div class="dr-bar" style="width:68%;background:var(--grad-cool);"></div></div><div class="dr-pct" style="color:var(--cyan);">6.8%</div></div>
+        <div class="dr-row"><div class="dr-name">CF Volatility</div><div class="dr-bwrap"><div class="dr-bar" style="width:61%;background:var(--grad-warm);"></div></div><div class="dr-pct" style="color:var(--amber);">6.1%</div></div>
+        <div class="dr-row"><div class="dr-name">Geography Tier</div><div class="dr-bwrap"><div class="dr-bar" style="width:52%;background:var(--grad-cool);"></div></div><div class="dr-pct" style="color:var(--cyan);">5.2%</div></div>
+      </div>
+      <div class="insight-pill">
+        ✨ <strong style="color:var(--amber);">Key Insight:</strong> <code style="font-family:'JetBrains Mono',monospace;color:var(--violet);">interest_x_dti</code> interaction captures combined financial stress invisible in either variable alone — the single most predictive engineered feature.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 7 — EARLY WARNING SYSTEM
+════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s7">
+  <div class="eyebrow">Early Warning System</div>
+  <div class="hero-title">Three-Tier EWS — <span class="hi">Act Before DPD-30</span></div>
+  <div class="sub">Proactive intervention framework detecting ~74% of eventual defaults 45+ days ahead of formal delinquency.</div>
+  <div class="ews-layout">
+    <div class="ews-tiers">
+      <div class="ews-tier green">
+        <div class="ews-hdr">
+          <div class="ews-led"></div>
+          <div class="ews-name">Tier 1 — Green Watch</div>
+          <div class="ews-time">60–90 days lead</div>
+        </div>
+        <div class="ews-body"><strong>Triggers:</strong> Single missed payment · DTI drift &gt;10% · Spending shock &gt;2× average</div>
+        <div class="ews-action">→ Soft outreach (SMS/app nudge) · Flag for next-cycle reassessment</div>
+      </div>
+      <div class="ews-tier amber">
+        <div class="ews-hdr">
+          <div class="ews-led"></div>
+          <div class="ews-name">Tier 2 — Amber Alert</div>
+          <div class="ews-time">30–60 days lead</div>
+        </div>
+        <div class="ews-body"><strong>Triggers:</strong> 2nd consecutive partial payment · CF volatility upgrade → High · LTI rising &gt;30%</div>
+        <div class="ews-action">→ Inbound call + restructuring offer · EMI holiday (≤2 months)</div>
+      </div>
+      <div class="ews-tier red">
+        <div class="ews-hdr">
+          <div class="ews-led"></div>
+          <div class="ews-name">Tier 3 — Red Alert</div>
+          <div class="ews-time">0–30 days lead</div>
+        </div>
+        <div class="ews-body"><strong>Triggers:</strong> DPD 30+ · Partial payment &lt;50% EMI for 2+ months · Balance deterioration</div>
+        <div class="ews-action">→ Escalate to Recoveries within 48h · NPA provisioning trigger</div>
+      </div>
+    </div>
+    <div class="ews-right">
+      <div class="formula-box">
+        <div class="formula-title">⚗️ EWS Composite Score</div>
+        <div class="formula-code">
+          EWS <span class="op">=</span> <span class="num">0.35</span> · Δ(EMI-to-Income)<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="op">+</span> <span class="num">0.25</span> · CF_Volatility_Score<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="op">+</span> <span class="num">0.20</span> · Δ(Balance_Trend)<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="op">+</span> <span class="num">0.20</span> · Payment_Timeliness_Index<br/>
+          <br/>
+          <span style="color:var(--muted);font-size:11px;">Threshold &gt; 0.65 → Tier-2 auto-escalation in CRM</span>
+        </div>
+      </div>
+      <div class="lift-panel">
+        <div class="lift-title">📈 Predictive Lift vs Baseline</div>
+        <div class="lift-row">
+          <div class="lift-lbl">Precision (flagged)</div>
+          <div class="lift-bwrap"><div class="lift-bar" style="width:72%;background:var(--grad-cool);"></div></div>
+          <div class="lift-val" style="color:var(--cyan);">+18pp</div>
+        </div>
+        <div class="lift-row">
+          <div class="lift-lbl">Recall (caught)</div>
+          <div class="lift-bwrap"><div class="lift-bar" style="width:88%;background:var(--grad-green);"></div></div>
+          <div class="lift-val" style="color:var(--lime);">+23pp</div>
+        </div>
+        <div class="lift-row">
+          <div class="lift-lbl">F1 Score lift</div>
+          <div class="lift-bwrap"><div class="lift-bar" style="width:66%;background:var(--grad-warm);"></div></div>
+          <div class="lift-val" style="color:var(--amber);">+51pp</div>
+        </div>
+      </div>
+      <div class="detection-highlight">
+        <div class="dh-num">74%</div>
+        <div class="dh-text">of eventual defaults detected <strong style="color:var(--lime);">45+ days</strong> ahead of DPD-30 — enabling restructuring before loss is locked in.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 8 — POLICY RECOMMENDATIONS
+════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s8">
+  <div class="eyebrow">Policy Recommendations</div>
+  <div class="hero-title">Six <span class="hi">Targeted Actions</span></div>
+  <div class="sub">Data-backed, operationally executable policies designed to reduce credit losses while preserving origination quality.</div>
+  <div class="pol-grid">
+    <div class="pol-card">
+      <div class="pol-icon">🚦</div>
+      <div class="pol-title">A — Score-Based Hard Cutoffs</div>
+      <div class="pol-body">Mandatory gates: ≥580 for Personal Loan ≤₹5L · ≥620 for larger tickets · ≥560 for BNPL · ≥600 + cashflow for SME. Eliminates the Very High Risk band from originations entirely.</div>
+      <div class="pol-impact">−₹4–6 Cr credit losses</div>
+    </div>
+    <div class="pol-card">
+      <div class="pol-icon">📏</div>
+      <div class="pol-title">B — DTI Overlay Decline Rule</div>
+      <div class="pol-body">Auto-decline: DTI proxy &gt;2.0 AND credit_quality = Poor, regardless of score. Directly targets the most predictive engineered interaction — <code style="font-family:'JetBrains Mono',monospace;color:var(--violet);">interest_x_dti</code>.</div>
+      <div class="pol-impact">−₹3–4 Cr credit losses</div>
+    </div>
+    <div class="pol-card">
+      <div class="pol-icon">💲</div>
+      <div class="pol-title">C — Risk-Based Pricing Grid</div>
+      <div class="pol-body">3-band structure: Prime (720+) at 11–13% · Near-Prime (600–720) at 15–18% · Sub-Prime (500–600) at 20–24%. Prices in expected loss; rewards good borrowers.</div>
+      <div class="pol-impact" style="color:var(--cyan);">+₹5–7 Cr interest income</div>
+    </div>
+    <div class="pol-card">
+      <div class="pol-icon">⏰</div>
+      <div class="pol-title">D — Tenure Caps by Segment</div>
+      <div class="pol-body">Sub-prime borrowers (score 500–600): maximum tenure capped at 18 months (vs current 36 months). Reduces exposure duration and improves loss-given-default in stressed scenarios.</div>
+      <div class="pol-impact">↓ Loss severity on defaults</div>
+    </div>
+    <div class="pol-card">
+      <div class="pol-icon">📱</div>
+      <div class="pol-title">E — Digital Channel Overlays</div>
+      <div class="pol-body">+50 score requirement for loans &gt;₹3L via app channel · mandatory income verification (AA consent) for &gt;₹1L · reduce pre-approved limits for first-loan Tier-3 profiles.</div>
+      <div class="pol-impact">−₹2–3 Cr digital NPA</div>
+    </div>
+    <div class="pol-card">
+      <div class="pol-icon">📊</div>
+      <div class="pol-title">F — Leadership Risk Dashboard</div>
+      <div class="pol-body">Monthly monitoring: 30-DPD Rate (&gt;8% → review) · EWS Amber Coverage (&gt;12% → scale) · Score Migration Index · Vintage Default Rate · CAC-to-CLV Ratio (&gt;0.35 → reprice).</div>
+      <div class="pol-impact">Proactive governance</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 9 — IMPACT ASSESSMENT
+════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s9">
+  <div class="eyebrow">Financial Impact</div>
+  <div class="hero-title">₹17–25 Cr <span class="hi">P&L Improvement</span></div>
+  <div class="sub">Basis: ₹800 Cr AUM · ~15% blended default rate · 35% recovery rate. Volume impact −6 to −9%, offset within 2–3 quarters via better unit economics.</div>
+  <div class="impact-layout">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="impact-rows">
+        <div class="ir positive"><div class="ir-lbl">Score cutoffs (≥580) — eliminate Very High Risk originations</div><div class="ir-val">−₹4–6 Cr</div></div>
+        <div class="ir positive"><div class="ir-lbl">DTI overlay — remove high-DTI / Poor credit cohort</div><div class="ir-val">−₹3–4 Cr</div></div>
+        <div class="ir income"><div class="ir-lbl">Risk-based repricing — higher spread on sub-prime band</div><div class="ir-val" style="color:var(--cyan);">+₹5–7 Cr</div></div>
+        <div class="ir positive"><div class="ir-lbl">Digital channel overlay — reduce NPA from app originations</div><div class="ir-val">−₹2–3 Cr</div></div>
+        <div class="ir positive"><div class="ir-lbl">EWS deployment — 25% pre-default restructuring success</div><div class="ir-val">−₹3–5 Cr</div></div>
+        <div class="ir total"><div class="ir-lbl">Total Net P&L Improvement</div><div class="ir-val" style="font-size:26px;">₹17–25 Cr</div></div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text);margin-bottom:10px;">Implementation Roadmap</div>
+        <div class="roadmap">
+          <div class="road-row"><span class="road-ph">M1–2</span><span class="road-txt">Deploy V2 model; implement score cutoffs & DTI overlay</span></div>
+          <div class="road-row"><span class="road-ph">M2–3</span><span class="road-txt">Launch EWS dashboard; train Collections on tier framework</span></div>
+          <div class="road-row"><span class="road-ph">M3–4</span><span class="road-txt">Implement risk-based pricing grid; revise product T&Cs</span></div>
+          <div class="road-row"><span class="road-ph">M4–6</span><span class="road-txt">Monitor vintages; A/B test digital channel overlays</span></div>
+          <div class="road-row"><span class="road-ph">M6+</span><span class="road-txt">Full rollout; quarterly model refresh & PSI/CSI monitoring</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="raroc-panel">
+      <div class="raroc-title">📐 Risk-Adjusted Return on Capital</div>
+      <div class="raroc-formula">RAROC = (NII − Expected Loss − OpEx) / Economic Capital</div>
+      <div class="raroc-row">
+        <div class="raroc-lbl">Current Policy (V1)</div>
+        <div class="raroc-vl rv1">14.2%</div>
+      </div>
+      <div class="raroc-arrow">↓</div>
+      <div class="raroc-row">
+        <div class="raroc-lbl">Recommended Policy (V2)</div>
+        <div class="raroc-vl rv2">18.6%</div>
+      </div>
+      <div class="raroc-highlight">
+        <div class="rh-num">+4.4 pp</div>
+        <div class="rh-lbl">RAROC improvement — driven by ↓ Expected Loss and ↓ Economic Capital requirement</div>
+      </div>
+      <div style="margin-top:8px;padding:12px 14px;border-radius:12px;background:rgba(0,245,255,.05);border:1px solid rgba(0,245,255,.1);font-size:12px;color:var(--muted);line-height:1.7;">
+        💡 Volume impact of tighter underwriting <strong style="color:var(--text);">−6 to −9%</strong> of originations is expected to be offset within <strong style="color:var(--lime);">2–3 quarters</strong> through improved unit economics and lower provisioning costs.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 10 — CALL TO ACTION
+════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s10">
+  <div class="cta-tag">🚀 Strategic Recommendation</div>
+  <div class="cta-title">From Volume-Led Growth<br/>to <span class="hi">Risk-Adjusted Excellence</span></div>
+  <div class="cta-sub">The data is clear. The model is production-ready. The policy framework is actionable. We recommend CRO sign-off on Phase 1 & 2 by Q3 2026.</div>
+  <div class="cta-kpis">
+    <div class="cta-kpi"><div class="kv">0.892</div><div class="kl">Model AUC</div></div>
+    <div class="cta-kpi"><div class="kv">₹25Cr</div><div class="kl">Max P&L Upside</div></div>
+    <div class="cta-kpi"><div class="kv">+4.4pp</div><div class="kl">RAROC Lift</div></div>
+    <div class="cta-kpi"><div class="kv">74%</div><div class="kl">Pre-Default Detection</div></div>
+  </div>
+  <button class="cta-btn" onclick="this.textContent='✅ Phase 1 Approved!';this.style.background='var(--grad-green)';">
+    Approve Phase 1 Implementation →
+  </button>
+  <div class="cta-foot">FinVista Digital Lending &nbsp;·&nbsp; Analytics & Risk Intelligence &nbsp;·&nbsp; Confidential &nbsp;·&nbsp; June 2026</div>
+</section>
+
+</div><!-- #deck -->
+
+<!-- NAV -->
+<div id="nav">
+  <button class="nbtn" onclick="go(-1)">&#8592;</button>
+  <div class="dots" id="dots"></div>
+  <span id="ctr">01/10</span>
+  <button class="nbtn" onclick="go(1)">&#8594;</button>
+</div>
+
+<script>
+/* ─── PARTICLES ──────────────────────────────── */
+(function(){
+  const c=document.getElementById('bg-canvas');
+  const ctx=c.getContext('2d');
+  let W,H,pts=[];
+  function resize(){W=c.width=innerWidth;H=c.height=innerHeight;}
+  function init(){
+    pts=[];
+    for(let i=0;i<90;i++) pts.push({
+      x:Math.random()*W, y:Math.random()*H,
+      vx:(Math.random()-.5)*.4, vy:(Math.random()-.5)*.4,
+      r:Math.random()*1.8+.3,
+      hue:Math.random()>0.5?180:270
+    });
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0||p.x>W) p.vx*=-1;
+      if(p.y<0||p.y>H) p.vy*=-1;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`hsla(${p.hue},100%,70%,.5)`;
+      ctx.fill();
+    });
+    // Lines between close particles
+    for(let i=0;i<pts.length;i++)
+      for(let j=i+1;j<pts.length;j++){
+        const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<120){
+          ctx.beginPath();
+          ctx.moveTo(pts[i].x,pts[i].y);
+          ctx.lineTo(pts[j].x,pts[j].y);
+          ctx.strokeStyle=`rgba(0,245,255,${.07*(1-d/120)})`;
+          ctx.lineWidth=.5;
+          ctx.stroke();
+        }
+      }
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',()=>{resize();init();});
+  resize();init();draw();
+})();
+
+/* ─── SLIDE ENGINE ───────────────────────────── */
+const slides=document.querySelectorAll('.slide');
+const dotsEl=document.getElementById('dots');
+const ctr=document.getElementById('ctr');
+const prog=document.getElementById('prog-line');
+let cur=0;
+
+slides.forEach((_,i)=>{
+  const d=document.createElement('div');
+  d.className='dot'+(i===0?' on':'');
+  d.addEventListener('click',()=>goTo(i));
+  dotsEl.appendChild(d);
+});
+
+function goTo(n){
+  slides[cur].classList.remove('active');
+  slides[cur].classList.add('out');
+  setTimeout(()=>slides[cur].classList.remove('out'),600);
+  cur=(n+slides.length)%slides.length;
+  slides[cur].classList.add('active');
+  ctr.textContent=String(cur+1).padStart(2,'0')+'/'+String(slides.length).padStart(2,'0');
+  prog.style.width=((cur+1)/slides.length*100)+'%';
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('on',i===cur));
+}
+function go(d){goTo(cur+d);}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') go(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp') go(-1);
+});
+let tx=0;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-tx;
+  if(Math.abs(dx)>50) go(dx<0?1:-1);
+});
+</script>
+</body>
+</html>
